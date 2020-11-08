@@ -1,4 +1,4 @@
-# 185.209.58.152
+# 185.209.58.152 - my IP
 # docker container run -it 20cd510d307b
 # USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh [--gossip-host YOUR_IP]
 

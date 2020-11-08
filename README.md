@@ -1,10 +1,21 @@
-To run Solana single-local-node:
-1.  docker build -t solana142 .
-# building will take >10 mins, (900 mb image )
+#### How to run Solana single-local-node
 
-2. docker container run -it solana142
-# -it will open shell inside ubuntu container
+1). Building takes  more than 10 mins, (900 mb image).
+```bash
+$ docker build -t solana142 .
+```
 
-# next run the local validator. You will see a lot of logs :) 
-3. USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh
+2). "-it" will open shell inside ubuntu container
 
+```bash
+$ docker container run -it solana142
+```
+
+3). Run a validator in VM shell. You will see a lot of logs:)  
+```bash
+$ USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh
+```
+
+
+## Docker-compose
+in ```docker-two/``` docker-compose for two nodes. Current state: cannot connect second node to main node.  

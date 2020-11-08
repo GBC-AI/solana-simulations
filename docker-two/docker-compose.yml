@@ -1,0 +1,24 @@
+version: "3"
+services:
+  genesis_node:
+    image: solana142
+    ports:
+      - "8001:8001"
+    volumes:
+      - /Users/korg/PycharmProjects/velas-ss/my_volume:/my_vol
+    command: sh -c "scp ./config/bootstrap-validator/genesis.bin /my_vol/ &&
+                    USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh --gossip-host 172.22.0.2 --log /my_vol/logs_genesis"
+  validator:
+    image: solana142
+    depends_on:
+      - genesis_node
+    volumes:
+      - /Users/korg/PycharmProjects/velas-ss/my_volume:/my_vol
+    command: sh -c "scp /my_vol/genesis.bin ./config/bootstrap-validator/ &&
+                    ls ../my_vol &&
+                    solana config get &&
+                    solana config set --url http://172.22.0.2:8001 &&
+                    solana config get  &&
+                    solana validators"
+
+                    # USE_INSTALL=1 ./multinode-demo/validator.sh --entrypoint 172.22.0.2:8001"

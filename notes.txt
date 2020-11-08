@@ -1,0 +1,10 @@
+docker build -t solana142 .
+docker container run -it solana142
+USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh
+
+docker-compose build
+docker-compose up
+docker-compose down
+docker-compose ps
+
+docker-compose exec [service name] [command]
