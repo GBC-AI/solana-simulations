@@ -1,10 +1,37 @@
 docker build -t solana142 .
 docker container run -it solana142
-USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh
+RUST_LOG='trace' USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh
 
 docker-compose build
-docker-compose up
-docker-compose down
-docker-compose ps
 
 docker-compose exec [service name] [command]
+
+
+
+USE_INSTALL=1 ./multinode-demo/faucet.sh
+
+# подключаем CLI к кластеру. порт и http !
+solana config set --url http://192.168.16.2:8899/
+solana validators
+
+# новый кошелек
+solana-keygen new --outfile my_solana_wallet.json
+    HAaUXSMfY8YEj3TGWoniL7HZXtD2PmRfiyfUyzv8EgsQ
+solana airdrop 19 3rhTCqdChRSvHHrsfBFfS3Dn1u3QkZWkcH23cuVjcSiw
+
+# адрес куда токены слать
+solana-keygen new --no-passphrase --no-outfile
+
+solana balance 7h5eyxxXoJ6bq7wB1RQ8snUZBP47zdhXy8xVahtJC7a3
+
+solana airdrop 10 GZkU3J63Zg1j5FVX6eCoio76uqKBJWYuS5uykJaNPzdU
+    Requesting airdrop of 10 SOL from 172.28.0.2:9900
+
+
+solana-keygen new --outfile my_solana_wallet.json
+    HAaUXSMfY8YEj3TGWoniL7HZXtD2PmRfiyfUyzv8EgsQ
+solana airdrop 19 3rhTCqdChRSvHHrsfBFfS3Dn1u3QkZWkcH23cuVjcSiw
+
+solana transfer --from my_solana_wallet.json 2Mw7zXCXyNFgf6PdCXRF7HtFZL5U53TdGfKp4T923h1n 15 --fee-payer my_solana_wallet.json
+solana transfer --from my_solana_wallet.json GF7d7BUvTry63JrpVAscoaC1fBGSXKHi7nUoJ5T96heB 0.000009999 --fee-payer my_solana_wallet.json
+
