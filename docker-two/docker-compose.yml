@@ -5,11 +5,10 @@ services:
     volumes:
       - /Users/korg/PycharmProjects/velas-ss/my_volume:/my_vol
     tty: true
-
     command: sh -c "scp ./config/bootstrap-validator/genesis.bin /my_vol/ &&
-              /bin/bash "
-        # RUST_LOG='trace' USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh --gossip-host 192.168.16.2 --log /my_vol/logs_genesis4"
-        # hostname -I | awk '{print $1}'
+        USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /my_vol/logs_genesis2
+        & USE_INSTALL=1 ./multinode-demo/faucet.sh"
+        # RUST_LOG='trace'
   validator:
     image: solana142
     depends_on:
@@ -18,6 +17,13 @@ services:
       - /Users/korg/PycharmProjects/velas-ss/my_volume:/my_vol
     tty: true
     command: sh -c "scp /my_vol/genesis.bin ./config/bootstrap-validator/ &&
-                    ls ../my_vol &&
-                    /bin/bash  "
-                   # USE_INSTALL=1 ./multinode-demo/validator.sh --entrypoint 192.168.16.2:8001"
+             USE_INSTALL=1 ./multinode-demo/validator.sh --entrypoint genesis_node:8001 --log /my_vol/logs_valid2"
+  cli:
+    image: solana142
+    depends_on:
+      - validator
+    tty: true
+    command:
+      sh -c "solana config set --url http://genesis_node:8899 &&
+      solana validators &&
+      /bin/bash "

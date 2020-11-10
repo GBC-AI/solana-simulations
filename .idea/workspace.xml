@@ -4,8 +4,8 @@
     <list default="true" id="eae55201-a752-4f90-b38f-ab31b62fe50e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-solana-single/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker-solana-single/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-two/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-two/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/notes.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,11 +27,13 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="Dockerfile" value="1" />
+          <entry key="Dockerfile" value="3" />
           <entry key="bin" value="1" />
-          <entry key="gitignore" value="3" />
+          <entry key="gitignore" value="4" />
+          <entry key="logs-single-exmpl" value="1" />
           <entry key="logs_genesis" value="5" />
           <entry key="logs_genesis2" value="2" />
+          <entry key="logs_genesis22" value="1" />
           <entry key="md" value="2" />
           <entry key="txt" value="1" />
           <entry key="yml" value="3" />
@@ -39,46 +41,56 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
+          <entry key="Dockerfile" value="2" />
           <entry key="Markdown" value="2" />
-          <entry key="PLAIN_TEXT" value="13" />
+          <entry key="PLAIN_TEXT" value="16" />
           <entry key="YAML" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Dockerfile" value="11" />
-          <entry key="gitignore" value="42" />
+          <entry key="Dockerfile" value="18" />
+          <entry key="gitignore" value="49" />
           <entry key="md" value="286" />
-          <entry key="txt" value="217" />
-          <entry key="yml" value="944" />
+          <entry key="txt" value="240" />
+          <entry key="yml" value="1198" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Dockerfile" value="11" />
+          <entry key="Dockerfile" value="18" />
           <entry key="Markdown" value="286" />
-          <entry key="PLAIN_TEXT" value="259" />
-          <entry key="YAML" value="944" />
+          <entry key="PLAIN_TEXT" value="289" />
+          <entry key="YAML" value="1198" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/docker-two/docker-compose.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="22" column="95" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="95" />
+            <state relative-caret-position="234">
+              <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/notes.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="32" selection-start-line="32" selection-end-line="32" />
+            <state relative-caret-position="284">
+              <caret line="26" selection-start-line="26" selection-end-line="26" selection-end-column="62" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/docker-solana-single/Dockerfile">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
             </state>
           </provider>
         </entry>
@@ -91,20 +103,19 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/docker-solana-single/Dockerfile" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/doc-sep-two/docker-compose.yml" />
-        <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/docker-two/docker-compose.yml" />
         <option value="$PROJECT_DIR$/notes.txt" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/docker-solana-single/Dockerfile" />
+        <option value="$PROJECT_DIR$/docker-two/docker-compose.yml" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1440" />
-    <option name="y" value="-525" />
-    <option name="width" value="1279" />
-    <option name="height" value="1024" />
+    <option name="y" value="23" />
+    <option name="width" value="1440" />
+    <option name="height" value="824" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -136,6 +147,11 @@
             <path>
               <item name="velas-ss" type="b2602c69:ProjectViewProjectNode" />
               <item name="velas-ss" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="velas-ss" type="b2602c69:ProjectViewProjectNode" />
+              <item name="velas-ss" type="462c0819:PsiDirectoryNode" />
+              <item name="docker-solana-single" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="velas-ss" type="b2602c69:ProjectViewProjectNode" />
@@ -187,9 +203,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1440" y="-525" width="1279" height="1024" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="824" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16852146" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14940098" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -200,7 +216,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.4989429" visible="true" weight="0.38519314" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" sideWeight="0.4989429" visible="true" weight="0.35655737" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5010571" side_tool="true" weight="0.30191258" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
@@ -225,20 +241,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/docker-solana-single/Dockerfile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="18" selection-start-column="18" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/my_volume/logs_genesis">
       <provider selected="true" editor-type-id="LargeFileEditor">
         <state relative-caret-position="-165490" />
@@ -254,17 +256,41 @@
         <state relative-caret-position="-1293076" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/docker-two/docker-compose.yml">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="22" column="95" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="95" />
+        <state relative-caret-position="51">
+          <caret line="3" column="5" lean-forward="true" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my_volume/logs_genesis22">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-262728" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/logs-single-exmpl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-18125" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docker-solana-single/Dockerfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/notes.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="32" selection-start-line="32" selection-end-line="32" />
+        <state relative-caret-position="284">
+          <caret line="26" selection-start-line="26" selection-end-line="26" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docker-two/docker-compose.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
         </state>
       </provider>
     </entry>
