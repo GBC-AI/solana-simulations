@@ -1,12 +1,12 @@
 import os
 import random
 
-def random_value(value, type = 'usize'):
+def random_value(value, dtype = 'usize'):
     value_list = [value]
 
-    if type == 'f64':
+    if dtype == 'f64':
         value = float(value)
-        value_list.extend([value*1.1, value*0.9])
+        value_list.extend([value * 1.1, value * 0.9])
     else:
         value = int(value)
         value_list.extend([int(value * 1.1), int(value * 0.9)])

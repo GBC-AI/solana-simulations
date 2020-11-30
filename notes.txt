@@ -16,14 +16,18 @@ solana-keygen new --outfile my_solana_wallet.json
 solana airdrop 19 3rhTCqdChRSvHHrsfBFfS3Dn1u3QkZWkcH23cuVjcSiw
 solana-keygen new --no-passphrase --no-outfile
 solana balance 7h5eyxxXoJ6bq7wB1RQ8snUZBP47zdhXy8xVahtJC7a3
-
 solana transfer --from my_solana_wallet.json 2Mw7zXCXyNFgf6PdCXRF7HtFZL5U53TdGfKp4T923h1n 15 --fee-payer my_solana_wallet.json
 
-указать ENV с абсолютным путем! перед запуском команд. export переменных окружения.
+git clone https://github.com/velas/solana.git
+cd solana
+git pull
+git checkout 3692b67e6
+# last version from Victor
 
-
+# указать ENV с абсолютным путем! перед запуском команд | export переменных окружения.
 TOML_CONFIG=$PWD/config.toml ./multinode-demo/setup.sh
 TOML_CONFIG=$PWD/config.toml ./multinode-demo/bootstrap-validator.sh
 
 docker run -it -v /$PWD/generated_config:/solana/generated_config adb4c02c5f5c
 cp generated_config/config.toml .
+

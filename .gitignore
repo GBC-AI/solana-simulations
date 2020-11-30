@@ -1,3 +1,6 @@
 my_volume/
 notes.txt
 .idea/
+.ipynb_checkpoints/
+transactions-sdk-generator.ipynb
+tools/simple_transaction_sender.py
