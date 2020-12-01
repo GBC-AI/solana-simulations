@@ -16,6 +16,7 @@ from solana.rpc.types import URI, RPCMethod, RPCResponse
 import itertools
 import logging
 import os
+import argparse
 from typing import Any, Optional, cast
 from solana.rpc._utils.encoding import FriendlyJsonSerde
 from solana.rpc.types import URI, RPCMethod, RPCResponse
@@ -52,16 +53,21 @@ async def batch_sender(tx_list):
 
 
 if __name__ == '__main__':
-    host = "http://devnet.solana.com:8899"
-    n = 100
+
+    parser = argparse.ArgumentParser(description='Run Velas performance test')
+    parser.add_argument('--tps', default=10, type=int, help='tps (banch trxs)')
+    parser.add_argument('--host', type=str, default="http://devnet.solana.com", help='count of transactions')
+    args = parser.parse_args()
+
+    host = args.host + ":8899"
+    n = args.tps
     start = datetime.datetime.now()
     print(start)
     sender, recipient = Account(5), Account(6)
-    hc = Client("https://devnet.solana.com")
+    hc = Client(args.host)
     hc.request_airdrop(sender.public_key(), 1000000000)
     tx_list = []
     try:
-        # TODO: Cache recent blockhash
         blockhash_resp = hc.get_recent_blockhash()
         if not blockhash_resp["result"]:
             raise RuntimeError("failed to get recent blockhash")
@@ -73,7 +79,6 @@ if __name__ == '__main__':
         tx = Transaction().add(transfer(TransferParams(from_pubkey=sender.public_key(),
                                                        to_pubkey=recipient.public_key(), lamports=11111 + _)))
         tx.recent_blockhash = recent_blockhash
-        # tx.nonce_info = _ + 2
         tx.sign(sender)
         tx_list.append(tx.serialize())
 
