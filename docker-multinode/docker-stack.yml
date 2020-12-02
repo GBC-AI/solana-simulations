@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  genesis_node:
+    image: nikromanov/solana-velas:1.5.0
+    command:
+      /bin/bash -c "rm -rf /mnt/logs/* &&
+                    ./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &
+                    ./multinode-demo/faucet.sh"
+    volumes:
+      - /mnt/nfs_share/solana/ad106_logs:/mnt/logs
+    networks:
+      - solana_net
+
+  validator:
+    image: nikromanov/solana-velas:1.5.0
+    depends_on:
+      - genesis_node
+    command: /bin/bash -c "sleep 5 && ./multinode-demo/validator.sh --entrypoint genesis_node:8001 --log /mnt/logs/solana_validator_`hostname`.txt"
+    volumes:
+      - /mnt/nfs_share/solana/ad106_logs:/mnt/logs
+    networks:
+      - solana_net
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 10
+      restart_policy:
+        condition: none
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 50M
+
+networks:
+  solana_net:
+    driver: overlay
+    attachable: true
