@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  genesis_node:
+    image: nikromanov/solana-velas:1.5.0
+    command:
+      /bin/bash -c "./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /mnt/logs/solana_genesis_node2 &
+                    ./multinode-demo/faucet.sh"
+    volumes:
+      - /mnt/nfs_share/solana/ad106_logs:/mnt/logs
+
+  validator:
+    image: nikromanov/solana-velas:1.5.0
+    depends_on:
+      - genesis_node
+    command: /bin/bash -c "sleep 15 && ./multinode-demo/validator.sh --entrypoint genesis_node:8001 --log /mnt/logs/solana_valid2"
+    volumes:
+      - /mnt/nfs_share/solana/ad106_logs:/mnt/logs
+  transaction:
+    image: trans-sender:0.2
+    depends_on:
+      - validator
+    command: /bin/bash -c "sleep 20 && python transaction_sender.py --tps 100 --host genesis_node"
+
+# python transaction_sender.py --tps 15 --host_air "http://devnet.solana.com:80"

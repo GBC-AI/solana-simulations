@@ -5,6 +5,7 @@ from aiohttp import ClientSession
 import json
 import solana
 import itertools
+import requests
 
 from solana.system_program import TransferParams, transfer
 from solana.transaction import Transaction
@@ -51,12 +52,35 @@ async def batch_sender(tx_list):
             post_tasks.append(do_post(session, host, txn, r_id))
         await asyncio.gather(*post_tasks)
 
+def airdrop_request(url, pubkey, value):
+    request_id = 1
+    method = RPCMethod("requestAirdrop")
+    headers = {"Content-Type": "application/json"}
+    params = [str(pubkey), value, {"commitment": "max"}]
+    data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": params})
+    print(url, headers, data)
+    raw_response = requests.post(url, headers=headers, data=data)
+    print(raw_response)
+
+def get_recent_blockhash(url):
+    request_id = 2
+    method = RPCMethod("getRecentBlockhash")
+    headers = {"Content-Type": "application/json"}
+    params = [{"commitment": "max"}]
+    data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": params})
+    print(url, headers, data)
+    raw_response = requests.post(url, headers=headers, data=data)
+    print(json.loads(raw_response.text))
+    return cast(RPCResponse, json.loads(raw_response.text))
+
+
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Run Velas performance test')
     parser.add_argument('--tps', default=10, type=int, help='tps (banch trxs)')
-    parser.add_argument('--host', type=str, default="http://devnet.solana.com", help='count of transactions')
+    parser.add_argument('--host', type=str, default="http://devnet.solana.com", help='host')
+    parser.add_argument('--host_air', type=str, default="http://devnet.solana.com", help='airdrop')
     args = parser.parse_args()
 
     host = args.host + ":8899"
@@ -64,16 +88,15 @@ if __name__ == '__main__':
     start = datetime.datetime.now()
     print(start)
     sender, recipient = Account(5), Account(6)
-    hc = Client(args.host)
-    hc.request_airdrop(sender.public_key(), 1000000000)
     tx_list = []
-    try:
-        blockhash_resp = hc.get_recent_blockhash()
-        if not blockhash_resp["result"]:
-            raise RuntimeError("failed to get recent blockhash")
-        recent_blockhash = Blockhash(blockhash_resp["result"]["value"]["blockhash"])
-    except Exception as err:
-        raise RuntimeError("failed to get recent blockhash") from err
+
+    # hc.request_airdrop(sender.public_key(), 1000000000)
+    airdrop_request(args.host_air, sender.public_key(), 100000001)
+
+    # blockhash_resp = hc.get_recent_blockhash()
+    blockhash_resp = get_recent_blockhash(host)
+    recent_blockhash = Blockhash(blockhash_resp["result"]["value"]["blockhash"])
+
     print(datetime.datetime.now() - start, "start creating txsns")
     for _ in range(n):
         tx = Transaction().add(transfer(TransferParams(from_pubkey=sender.public_key(),
@@ -85,3 +108,5 @@ if __name__ == '__main__':
     print(datetime.datetime.now() - start, "start sending")
     asyncio.run(batch_sender(tx_list))
     print(datetime.datetime.now() - start, "done")
+
+# python tools/transaction_sender.py --tps 15 --host_air "http://devnet.solana.com:80"
