@@ -27,7 +27,7 @@ async def do_post(session, url, params, request_id):
     headers = {"Content-Type": "application/json"}
     method = RPCMethod("sendTransaction")
     data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method,
-                       "params": [params, {"skipPreflight": False,
+                       "params": [params, {"skipPreflight": True,
                                            "preflightCommitment": "max", "encoding": "base64"}]})
     async with session.post(url, headers=headers, data=data) as response:
         await response.text()
@@ -51,7 +51,7 @@ def airdrop_request(url, pubkey, value):
     headers = {"Content-Type": "application/json"}
     params = [str(pubkey), value, {"commitment": "max"}]
     data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": params})
-    print(url, headers, data)
+    print(data)
     raw_response = requests.post(url, headers=headers, data=data)
     print(raw_response)
 
@@ -72,33 +72,34 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run Velas performance test')
     parser.add_argument('--tps', default=10, type=int, help='tps (banch trxs)')
     parser.add_argument('--host', type=str, default="http://devnet.solana.com", help='host')
-    parser.add_argument('--lampos', default=100000001, type=int, help='airdrop value')
+    parser.add_argument('--lamports', default=1234567890, type=int, help='airdrop value')
     args = parser.parse_args()
 
     host = args.host + ":8899"
     start = datetime.datetime.now()
     print(start)
-    sender, recipient = Account(147), Account(148)
-    airdrop_request(host, sender.public_key(), args.lampos)
+    hc = Client(host)
+    sender, recipient = Account(4), Account(5)
+    airdrop_request(host, sender.public_key(), args.lamports)
+
     time.sleep(5)
     recent_blockhash = Blockhash(get_recent_blockhash(host)["result"]["value"]["blockhash"])
-    print(datetime.datetime.now() - start, "start creating txsns")
-    print(Client(host).get_balance(sender.public_key()))
-    print(Client(host).get_balance(recipient.public_key()))
-
+    print(datetime.datetime.now() - start, "start creating transactions")
+    print(hc.get_balance(sender.public_key()))
+    print(hc.get_balance(recipient.public_key()))
     tx_list = []
     for i in range(args.tps):
         tx = Transaction().add(transfer(TransferParams(from_pubkey=sender.public_key(),
-                                                       to_pubkey=recipient.public_key(), lamports=11111+i )))
+                                                       to_pubkey=recipient.public_key(), lamports=10000+i)))
         tx.recent_blockhash = recent_blockhash
         tx.sign(sender)
         tx_list.append(tx.serialize())
 
-    print(datetime.datetime.now() - start, "start sending")
+    print(datetime.datetime.now() - start, "start sending transactions")
     asyncio.run(batch_sender(tx_list))
-    print(datetime.datetime.now() - start, "done")
-    print(Client(host).get_balance(recipient.public_key()))
-    time.sleep(15)
-    print(Client(host).get_balance(recipient.public_key()))
+    print(datetime.datetime.now() - start, "batch is sent")
+
+    time.sleep(20)
+    print(hc.get_balance(recipient.public_key()))
 
 # python tools/transaction_sender.py --tps 15"
