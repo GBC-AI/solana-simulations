@@ -1,29 +1,21 @@
 import asyncio
 import aiohttp
 import datetime
-from aiohttp import ClientSession
 import json
-import solana
-import itertools
 import requests
+import argparse
+import time
+from typing import cast
+import solana
 
 from solana.system_program import TransferParams, transfer
 from solana.transaction import Transaction
 from solana.account import Account
 from solana.rpc.api import Client
 from solana.blockhash import Blockhash
-from solana.rpc.types import URI, RPCMethod, RPCResponse
 
-import itertools
-import logging
-import os
-import argparse
-from typing import Any, Optional, cast
-from solana.rpc._utils.encoding import FriendlyJsonSerde
-from solana.rpc.types import URI, RPCMethod, RPCResponse
-from solana.rpc.providers.base import BaseProvider
+from solana.rpc.types import RPCMethod, RPCResponse
 from base64 import b64encode
-from solana.rpc.types import RPCMethod
 
 # Nonce-info передавать разный
 # каждую транзакцию опросить receipt
@@ -38,8 +30,8 @@ async def do_post(session, url, params, request_id):
                        "params": [params, {"skipPreflight": False,
                                            "preflightCommitment": "max", "encoding": "base64"}]})
     async with session.post(url, headers=headers, data=data) as response:
-          resp = await response.text()
-          # print(resp, end='')
+        await response.text()
+
 
 async def batch_sender(tx_list):
     async with aiohttp.ClientSession() as session:
@@ -52,6 +44,7 @@ async def batch_sender(tx_list):
             post_tasks.append(do_post(session, host, txn, r_id))
         await asyncio.gather(*post_tasks)
 
+
 def airdrop_request(url, pubkey, value):
     request_id = 1
     method = RPCMethod("requestAirdrop")
@@ -61,6 +54,7 @@ def airdrop_request(url, pubkey, value):
     print(url, headers, data)
     raw_response = requests.post(url, headers=headers, data=data)
     print(raw_response)
+
 
 def get_recent_blockhash(url):
     request_id = 2
@@ -74,33 +68,28 @@ def get_recent_blockhash(url):
     return cast(RPCResponse, json.loads(raw_response.text))
 
 
-
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser(description='Run Velas performance test')
     parser.add_argument('--tps', default=10, type=int, help='tps (banch trxs)')
     parser.add_argument('--host', type=str, default="http://devnet.solana.com", help='host')
-    parser.add_argument('--host_air', type=str, default="http://devnet.solana.com", help='airdrop')
+    parser.add_argument('--lampos', default=100000001, type=int, help='airdrop value')
     args = parser.parse_args()
 
     host = args.host + ":8899"
-    n = args.tps
     start = datetime.datetime.now()
     print(start)
-    sender, recipient = Account(5), Account(6)
-    tx_list = []
-
-    # hc.request_airdrop(sender.public_key(), 1000000000)
-    airdrop_request(args.host_air, sender.public_key(), 100000001)
-
-    # blockhash_resp = hc.get_recent_blockhash()
-    blockhash_resp = get_recent_blockhash(host)
-    recent_blockhash = Blockhash(blockhash_resp["result"]["value"]["blockhash"])
-
+    sender, recipient = Account(147), Account(148)
+    airdrop_request(host, sender.public_key(), args.lampos)
+    time.sleep(5)
+    recent_blockhash = Blockhash(get_recent_blockhash(host)["result"]["value"]["blockhash"])
     print(datetime.datetime.now() - start, "start creating txsns")
-    for _ in range(n):
+    print(Client(host).get_balance(sender.public_key()))
+    print(Client(host).get_balance(recipient.public_key()))
+
+    tx_list = []
+    for i in range(args.tps):
         tx = Transaction().add(transfer(TransferParams(from_pubkey=sender.public_key(),
-                                                       to_pubkey=recipient.public_key(), lamports=11111 + _)))
+                                                       to_pubkey=recipient.public_key(), lamports=11111+i )))
         tx.recent_blockhash = recent_blockhash
         tx.sign(sender)
         tx_list.append(tx.serialize())
@@ -108,5 +97,8 @@ if __name__ == '__main__':
     print(datetime.datetime.now() - start, "start sending")
     asyncio.run(batch_sender(tx_list))
     print(datetime.datetime.now() - start, "done")
+    print(Client(host).get_balance(recipient.public_key()))
+    time.sleep(15)
+    print(Client(host).get_balance(recipient.public_key()))
 
-# python tools/transaction_sender.py --tps 15 --host_air "http://devnet.solana.com:80"
+# python tools/transaction_sender.py --tps 15"
