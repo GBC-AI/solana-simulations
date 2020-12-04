@@ -2,8 +2,10 @@
 
 Build image with Solana binaries
 ```bash
-docker build -t nikromanov/solana-velas:1.5.0 .
+DOCKER_BUILDKIT=1 docker build -t nikromanov/solana-velas:1.5.0 .
 ```
+and push optionally. **Note**: to build image you have to download solana repo in this folder
+and switch to necessary branch. 
 
 Deploy stack on Docker Swarm  
 ```bash
