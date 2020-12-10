@@ -4,7 +4,7 @@ services:
   genesis_node:
     image: nikromanov/solana-velas:1.5.0
     command:
-      /bin/bash -c "./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /mnt/logs/solana_genesis_node10 &
+      /bin/bash -c "RUST_LOG='trace' ./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /mnt/logs/solana_genesis_node &
                     ./multinode-demo/faucet.sh"
     volumes:
       - /mnt/nfs_share/solana/ad106_logs:/mnt/logs

@@ -1,3 +1,5 @@
+# image solana_conf, 14 GB ?
+
 FROM ubuntu
 RUN apt-get -y update && apt-get install && apt-get -y install curl
 RUN apt-get install make

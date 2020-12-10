@@ -31,3 +31,20 @@ TOML_CONFIG=$PWD/config.toml ./multinode-demo/bootstrap-validator.sh
 docker run -it -v /$PWD/generated_config:/solana/generated_config adb4c02c5f5c
 cp generated_config/config.toml .
 
+docker service logs -f {NAME_OF_THE_SERVICE}
+docker service ls
+
+
+docker run -it -v /Users/korg/PycharmProjects/velas-ss/configs/generated:/mnt_generated --name my_cont 17c4c7cdc673
+cp ../mnt_generated/config.toml .
+#??? USE_INSTALL=1 ./multinode-demo/setup.sh
+USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh
+
+docker run -it -v /Users/korg/PycharmProjects/velas-ss/configs/generated:/mnt_generated 17c4c7cdc673 /bin/bash -c "cp ../mnt_generated/config.toml . && USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh"
+docker run -it -v /Users/korg/PycharmProjects/velas-ss/configs/generated:/mnt_generated 17c4c7cdc673 /bin/bash -c "cp ../mnt_generated/config.toml . && USE_INSTALL=1 ./multinode-demo/setup.sh && USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh"
+
+1 min N trans per sec, on K nodes
+N = [10, 20, 50, 100, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]
+K = [5, 10, 15 ,20]
+найти диапазон равновесия на devnet?
+
