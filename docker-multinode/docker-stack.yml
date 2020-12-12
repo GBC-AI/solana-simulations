@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   genesis_node:
     image: nikromanov/solana-velas:1.5.0
@@ -11,10 +13,10 @@ services:
       - solana_net
 
   transaction:
-    image: trans-sender:0.7
+    image: trans_sender:latest
     depends_on:
       - genesis_node
-    command: /bin/bash -c "sleep 15 && python transaction_sender.py --tps 700 --host http://genesis_node"
+    command: /bin/bash -c "sleep 15 && python transaction_sender.py --tps 700 --host http://genesis_node --mode one"
     networks:
       - solana_net
 

@@ -18,10 +18,6 @@ from solana.blockhash import Blockhash
 from solana.rpc.types import RPCMethod, RPCResponse
 from base64 import b64encode
 
-# Nonce-info передавать разный
-# у каждого блока найти таймстэмп
-# посчитать среднее время транзакции
-
 
 async def post_transaction(session, url, params, request_id):
     headers = {"Content-Type": "application/json"}
@@ -160,7 +156,6 @@ if __name__ == '__main__':
 
     check_transactions(slot)
     print("END : ", datetime.datetime.now())
-
 
 
 # python tools/transaction_sender.py --tps 100 --mode one"
