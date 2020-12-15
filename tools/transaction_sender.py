@@ -19,7 +19,7 @@ from solana.rpc.types import RPCMethod, RPCResponse
 from base64 import b64encode
 
 
-async def post_transaction(session, url, params, request_id):
+async def post_transaction(session, url, params, request_id, current_slot):
     headers = {"Content-Type": "application/json"}
     method = RPCMethod("sendTransaction")
     data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method,
@@ -27,41 +27,43 @@ async def post_transaction(session, url, params, request_id):
                                            "preflightCommitment": "max", "encoding": "base64"}]})
     async with session.post(url, headers=headers, data=data) as response:
         response_text = await response.text()
-        validating_dict[json.loads(response_text)["result"]] = None  # adding transaction to validating_set
+        # adding transaction to validating_set
+        validating_list[json.loads(response_text)["result"]] = {'sent_slot': current_slot,
+                                                                'commitment_slot': None}
 
 
-async def post_transaction_checker(session, url, tx_sig, request_id):
+async def post_transaction_checker(session, url, tx_sign, request_id):
     headers = {"Content-Type": "application/json"}
     method = RPCMethod("getConfirmedTransaction")
     data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method,
-                       "params": [tx_sig, "json"]})
+                       "params": [tx_sign, "json"]})
     async with session.post(url, headers=headers, data=data) as response:
         response_text = await response.text()
         if json.loads(response_text)["result"] is None:
-            validating_dict[tx_sig] = None
+            validating_list[tx_sign]['commitment_slot'] = None
         else:
-            validating_dict[tx_sig] = json.loads(response_text)["result"]['slot']
+            validating_list[tx_sign]['commitment_slot'] = json.loads(response_text)["result"]['slot']
 
 
-async def batch_checker(validating_list):
+async def experiment_checker():
     async with aiohttp.ClientSession() as session:
         post_tasks = []
-        request_id = 3  # comment this
-        for txn in validating_list:
+        request_id = 3
+        for txn in validating_list.keys():
             request_id += 1
             post_tasks.append(post_transaction_checker(session, host, txn, request_id))
         await asyncio.gather(*post_tasks)
 
 
-async def batch_sender(tx_list):
+async def batch_sender(batch, current_slot):
     async with aiohttp.ClientSession() as session:
         post_tasks = []
-        request_id = 3  # comment this
-        for txn in tx_list:
+        request_id = 3  # each request must be with unique request_id
+        for txn in batch:
             request_id += 1
             if isinstance(txn, bytes):
                 txn = b64encode(txn).decode("utf-8")
-            post_tasks.append(post_transaction(session, host, txn, request_id))
+            post_tasks.append(post_transaction(session, host, txn, request_id, current_slot))
         await asyncio.gather(*post_tasks)
 
 
@@ -91,7 +93,7 @@ def get_recent_blockhash(url):
 def create_batch_transactions(n=10, sender=Account(4), recipient=Account(5), lamports=10000):
     blockhash_response = get_recent_blockhash(host)
     blockhash = Blockhash(blockhash_response["result"]["value"]["blockhash"])
-    print(datetime.datetime.now() - start, "start creating transactions")
+    print(datetime.datetime.now() - start, "start creating batch")
     batch_transactions = []
     for i in range(n):
         tx = Transaction().add(transfer(TransferParams(from_pubkey=sender.public_key(),
@@ -102,21 +104,21 @@ def create_batch_transactions(n=10, sender=Account(4), recipient=Account(5), lam
     return batch_transactions, blockhash_response['result']['context']['slot']
 
 
-def check_transactions(batch_slot):
+def check_transactions():
     incorrect_transaction_cnt = 0
     latency = []
     time.sleep(20)
-    print(hc.get_balance(recipient.public_key()))
+    print("balance recipient:", hc.get_balance(recipient.public_key())['result'])
 
-    asyncio.run(batch_checker(validating_dict.keys()))
+    asyncio.run(experiment_checker())
 
-    for transaction in validating_dict.keys():
-        if validating_dict[transaction] is None:
+    for transaction in validating_list.keys():
+        if validating_list[transaction]['commitment_slot'] is None:
             incorrect_transaction_cnt += 1
         else:
-            latency.append(validating_dict[transaction] - batch_slot)
-    print("Transactions:", len(latency),
-          "Not passed transactions:", incorrect_transaction_cnt)
+            latency.append(validating_list[transaction]['commitment_slot'] - validating_list[transaction]['sent_slot'])
+    print("Success:", len(latency),
+          "Error:", incorrect_transaction_cnt)
     if len(latency):
         print('Mean latency:', mean(latency), 'slots')
 
@@ -125,8 +127,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run Velas performance test')
     parser.add_argument('--tps', default=10, type=int, help='tps (batch transactions)')
     parser.add_argument('--host', type=str, default="http://devnet.solana.com", help='host')
-    parser.add_argument('--lamports', default=1234567890, type=int, help='airdrop value')
-    parser.add_argument('--mode', default='one', help='mode of sender: one - just one batch of tps txs, multi - still DEV')
+    parser.add_argument('--airdrop', default=1234567890, type=int, help='airdrop value')
+    parser.add_argument('--s', default=1, type=int, help='duration of experiment in seconds')
     args = parser.parse_args()
 
     host = args.host + ":8899"
@@ -134,28 +136,23 @@ if __name__ == '__main__':
     print("START : ", start)
     hc = Client(host)
     sender, recipient = Account(6), Account(7)
-    airdrop_request(host, sender.public_key(), args.lamports)
+    airdrop_request(host, sender.public_key(), args.airdrop)
     time.sleep(5)
-    print(hc.get_balance(sender.public_key()))
-    print(hc.get_balance(recipient.public_key()))
-    validating_dict = {}
+    print("balance sender:", hc.get_balance(sender.public_key())['result'])
+    print("balance recipient:", hc.get_balance(recipient.public_key())['result'])
 
-    if args.mode == 'multi':
-        for transactions_per_batch in [10, 100, 1000]:
-            for second in range(5):
-                time.sleep(1)
-                tx_list, slot = create_batch_transactions(transactions_per_batch, sender, recipient) # add slot to valid dict
-                asyncio.run(batch_sender(tx_list))
-                print(datetime.datetime.now() - start, "batch is sent : ", transactions_per_batch)
-
-    elif args.mode == 'one':
-        tx_list, slot = create_batch_transactions(args.tps, sender, recipient)
-        print(datetime.datetime.now() - start, "start sending transactions")
-        asyncio.run(batch_sender(tx_list))
+    validating_list = {}
+    for second in range(args.s):
+        tx_list, slot = create_batch_transactions(args.tps, sender, recipient) # add slot to valid dict
+        print(datetime.datetime.now() - start, "start sending batch of {} part {}".format(args.tps, second+1))
+        asyncio.run(batch_sender(tx_list, slot))
         print(datetime.datetime.now() - start, "batch is sent")
+        time.sleep(0.5)
+    print(datetime.datetime.now() - start, "experiment is sent")
 
-    check_transactions(slot)
+    check_transactions()
+
     print("END : ", datetime.datetime.now())
 
 
-# python tools/transaction_sender.py --tps 100 --mode one"
+# python tools/transaction_sender.py --tps 100 --s 3"
