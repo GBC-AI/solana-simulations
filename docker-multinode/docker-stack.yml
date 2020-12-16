@@ -17,6 +17,8 @@ services:
     depends_on:
       - genesis_node
     command: /bin/bash -c "sleep 15 && python transaction_sender.py --tps 700 --host http://genesis_node --mode one"
+    volumes:
+    - /mnt/nfs_share/solana/ad106_logs:/mnt/logs
     networks:
       - solana_net
 
