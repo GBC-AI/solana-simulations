@@ -121,6 +121,11 @@ def check_transactions():
           "Error:", incorrect_transaction_cnt)
     if len(latency):
         print('Mean latency:', mean(latency), 'slots')
+    with open("transaction_logger.txt", "w") as file:
+        file.write(host+'\n')
+        file.write("Success: {} Error: {}\n".format(len(latency), incorrect_transaction_cnt))
+        if len(latency):
+            file.write('Mean latency: {} slots'.format(mean(latency)))
 
 
 if __name__ == '__main__':
