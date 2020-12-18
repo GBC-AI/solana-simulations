@@ -1,24 +1,21 @@
 version: "3.8"
 
 services:
+  transaction:
+    image: python_trans_conf:2
+    command: /bin/bash -c "cd velas-ss && python config_generator.py && cd .. &&  cp "./velas-ss/generated/config.toml" /mnt/logs && sleep 25 && python velas-ss/transaction_sender.py --tps 100 --s 5"
+    volumes:
+      - /mnt/nfs_share/solana/exp1:/mnt/logs
+    networks:
+      - solana_net
   genesis_node:
     image: nikromanov/solana-velas:1.5.0
     command:
-      /bin/bash -c "rm -rf /mnt/logs/* &&
-                    RUST_LOG='trace' ./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &
-                    ./multinode-demo/faucet.sh"
+      /bin/bash -c "sleep 5 && cp "/mnt/logs/config.toml" ./ && USE_INSTALL=1 ./multinode-demo/setup.sh && cp ./config/bootstrap-validator/genesis.bin /mnt/logs/ &&
+                    ./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &
+                    sleep 15 && ./multinode-demo/faucet.sh"
     volumes:
-      - /mnt/nfs_share/solana/ad106_logs:/mnt/logs
-    networks:
-      - solana_net
-
-  transaction:
-    image: trans_sender:latest
-    depends_on:
-      - genesis_node
-    command: /bin/bash -c "sleep 15 && python transaction_sender.py --tps 700 --host http://genesis_node --mode one"
-    volumes:
-    - /mnt/nfs_share/solana/ad106_logs:/mnt/logs
+      - /mnt/nfs_share/solana/exp1:/mnt/logs
     networks:
       - solana_net
 
@@ -26,13 +23,14 @@ services:
     image: nikromanov/solana-velas:1.5.0
     depends_on:
       - genesis_node
-    command: /bin/bash -c "sleep 5 && RUST_LOG='trace' ./multinode-demo/validator.sh --entrypoint genesis_node:8001 --log /mnt/logs/solana_validator_`hostname`.txt"
+    command: /bin/bash -c "sleep 15 && cp /mnt/logs/genesis.bin ./config/bootstrap-validator/ && cp "/mnt/logs/config.toml" .
+                           && ./multinode-demo/validator.sh --entrypoint genesis_node:8001 --log /mnt/logs/solana_validator_`hostname`.txt"
     volumes:
-      - /mnt/nfs_share/solana/ad106_logs:/mnt/logs
+      - /mnt/nfs_share/solana/exp1:/mnt/logs
     networks:
       - solana_net
     deploy:
-      replicas: 4
+      replicas: 2
       placement:
         max_replicas_per_node: 10
       restart_policy:
