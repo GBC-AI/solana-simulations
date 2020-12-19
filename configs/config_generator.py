@@ -2,7 +2,8 @@ import os
 import random
 import argparse
 
-def random_value(value, dtype = 'usize'):
+
+def random_value(value, dtype='usize'):
     value_list = [value]
 
     if dtype == 'f64':
@@ -15,6 +16,7 @@ def random_value(value, dtype = 'usize'):
         return random.choice(value_list)
     else:
         return value
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='creating config file')
@@ -32,8 +34,7 @@ if __name__ == '__main__':
                 file.write(line.strip()+"\n")
                 continue
             if line_details[1] == '=':
-                value = line_details[2].replace("_","")
+                value = line_details[2].replace("_", "")
                 value_type = line_details[4].strip()
                 constants[line_details[0]] = [value, value_type, random_value(value, value_type)]
                 file.write(line_details[0] + ' = ' + str(constants[line_details[0]][2]) + "\n")
-
