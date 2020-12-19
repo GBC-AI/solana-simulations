@@ -18,7 +18,10 @@ RUN rustup --version; \
     rustc --version; \
     cargo build --release --all
 RUN ./multinode-demo/setup.sh
-RUN cp -R config ./config_default && \
+# IMPORTANT! To run inside docker swarm you shouldn't check ports because it leads to fail.
+# The next row will set --no-port-check flag when solana-validator will be called
+RUN sed -i '/^default_arg\ \-\-require\-tower=*/adefault_arg --no-port-check' multinode-demo/validator.sh && \
+    cp -R config ./config_default && \
     rm -rf target/release/build \
            target/release/deps \
            target/release/.fingerprint \
