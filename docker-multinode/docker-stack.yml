@@ -3,7 +3,7 @@ version: "3.8"
 services:
   transaction:
     image: python_trans_conf:2
-    command: /bin/bash -c "cd velas-ss && python config_generator.py && cd .. &&  cp "./velas-ss/generated/config.toml" /mnt/logs && sleep 25 && python velas-ss/transaction_sender.py --tps 100 --s 5"
+    command: /bin/bash -c "cd velas-ss && python config_generator.py && cd .. &&  cp "./velas-ss/generated/config.toml" /mnt/logs && sleep 25 && python velas-ss/transaction_sender.py --tps 100 --s 5 && cp "transaction_logger.txt" /mnt/logs"
     volumes:
       - /mnt/nfs_share/solana/exp1:/mnt/logs
     networks:
