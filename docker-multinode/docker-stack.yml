@@ -1,32 +1,44 @@
 version: "3.8"
 
+# it work only on beta server
 services:
-  transaction:
-    image: python_trans_conf:2
-    command: /bin/bash -c "cd velas-ss && python config_generator.py && cd .. &&  cp "./velas-ss/generated/config.toml" /mnt/logs && sleep 25 && python velas-ss/transaction_sender.py --tps 100 --s 5 && cp "transaction_logger.txt" /mnt/logs"
+  config_generator:
+    # TODO: create a separate image for python stuff
+    image: python:3.8-slim
+    command: bash -c "python config_generator.py --output /solana/config/config.toml"
     volumes:
-      - /mnt/nfs_share/solana/exp1:/mnt/logs
-    networks:
-      - solana_net
+      - /mnt/nfs_share/solana/ad159v2/config:/solana/config
+      - ../configs:/config_generator/
+    # this should be overwritten in the new image
+    working_dir: /config_generator
+    user: 10000:2001
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
   genesis_node:
     image: nikromanov/solana-velas:1.5.0
+    depends_on:
+      - config_generator
     command:
-      /bin/bash -c "sleep 5 && cp "/mnt/logs/config.toml" ./ && USE_INSTALL=1 ./multinode-demo/setup.sh && cp ./config/bootstrap-validator/genesis.bin /mnt/logs/ &&
-                    ./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &
-                    sleep 15 && ./multinode-demo/faucet.sh"
+      bash -c 'sleep 3 && ./multinode-demo/setup.sh &&
+      nohup bash -c "./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &" &&
+      ./multinode-demo/faucet.sh'
     volumes:
-      - /mnt/nfs_share/solana/exp1:/mnt/logs
+      - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
+      - /mnt/nfs_share/solana/ad159v2/config:/solana/config
+    environment:
+      - TOML_CONFIG=/solana/config/config.toml
     networks:
       - solana_net
-
   validator:
     image: nikromanov/solana-velas:1.5.0
     depends_on:
       - genesis_node
-    command: /bin/bash -c "sleep 15 && cp /mnt/logs/genesis.bin ./config/bootstrap-validator/ && cp "/mnt/logs/config.toml" .
-                           && ./multinode-demo/validator.sh --entrypoint genesis_node:8001 --log /mnt/logs/solana_validator_`hostname`.txt"
+    command: bash -c "sleep 7 && ./multinode-demo/validator.sh --label `hostname` --entrypoint genesis_node:8001 --log /mnt/logs/solana_validator_`hostname`.txt"
     volumes:
-      - /mnt/nfs_share/solana/exp1:/mnt/logs
+      - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
+      - /mnt/nfs_share/solana/ad159v2/config:/solana/config
     networks:
       - solana_net
     deploy:
@@ -42,6 +54,22 @@ services:
         reservations:
           cpus: '1'
           memory: 50M
+  transaction:
+    # This image must not be local
+    image: python_trans_conf:5
+    depends_on:
+      - validator
+    command: bash -c "sleep 25 && python velas-ss/transaction_sender.py --tps 100 --s 5"
+    volumes:
+      - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
+    networks:
+      - solana_net
+    # NO ROOT!
+    user: 10000:2001
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
 
 networks:
   solana_net:
