@@ -21,10 +21,11 @@ def random_value(value, dtype='usize'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='creating config file')
     parser.add_argument('--random', action='store_true', help='is random configs')
+    parser.add_argument('--output', default="./generated/config.toml", type=str, help='output file path')
     args = parser.parse_args()
 
     constants = {}
-    file = open("./generated/config.toml", "w")
+    file = open(args.output, "w")
     with open("config.toml") as original_config_file:
         for line in original_config_file:
             line_details = line.split(" ")
