@@ -4,6 +4,7 @@ notes.txt
 .ipynb_checkpoints/
 transactions-sdk-generator.ipynb
 tools/simple_transaction_sender.py
+transaction_logger.txt
 
 # Don't add solana source code in this repo
 docker-multinode/solana/
