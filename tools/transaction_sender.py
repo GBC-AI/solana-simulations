@@ -104,7 +104,7 @@ def create_batch_transactions(n=10, sender=Account(4), recipient=Account(5), lam
     return batch_transactions, blockhash_response['result']['context']['slot']
 
 
-def check_transactions():
+def check_transactions(output_path):
     incorrect_transaction_cnt = 0
     latency = []
     time.sleep(20)
@@ -121,7 +121,8 @@ def check_transactions():
           "Error:", incorrect_transaction_cnt)
     if len(latency):
         print('Mean latency:', mean(latency), 'slots')
-    with open("transaction_logger.txt", "a") as file:
+
+    with open(output_path, "a") as file:
         file.write(host+'\n')
         file.write("{} Success: {} Error: {}\n".format(start, len(latency), incorrect_transaction_cnt))
         if len(latency):
@@ -134,6 +135,7 @@ if __name__ == '__main__':
     parser.add_argument('--host', type=str, default="http://devnet.solana.com", help='host')
     parser.add_argument('--airdrop', default=1234567890, type=int, help='airdrop value')
     parser.add_argument('--s', default=1, type=int, help='duration of experiment in seconds')
+    parser.add_argument('--output', default='/mnt/logs/transaction_logger.txt', type=str, help='output file path')
     args = parser.parse_args()
 
     host = args.host + ":8899"
@@ -155,7 +157,7 @@ if __name__ == '__main__':
         time.sleep(0.5)
     print(datetime.datetime.now() - start, "experiment is sent")
 
-    check_transactions()
+    check_transactions(args.output)
 
     print("END : ", datetime.datetime.now())
 
