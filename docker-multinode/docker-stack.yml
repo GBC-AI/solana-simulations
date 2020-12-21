@@ -39,6 +39,8 @@ services:
     volumes:
       - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
       - /mnt/nfs_share/solana/ad159v2/config:/solana/config
+    environment:
+      - TOML_CONFIG=/solana/config/config.toml
     networks:
       - solana_net
     deploy:
@@ -59,9 +61,10 @@ services:
     image: python_trans_conf:5
     depends_on:
       - validator
-    command: bash -c "sleep 25 && python velas-ss/transaction_sender.py --tps 100 --s 5"
+    command: bash -c "sleep 25 && python velas-ss/transaction_sender.py --tps 100 --s 5 --host http://genesis_node"
     volumes:
       - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
+      - ../tools:/velas-ss/
     networks:
       - solana_net
     # NO ROOT!

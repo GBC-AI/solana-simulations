@@ -127,6 +127,7 @@ def check_transactions(output_path):
         file.write("{} Success: {} Error: {}\n".format(start, len(latency), incorrect_transaction_cnt))
         if len(latency):
             file.write('Mean latency: {} slots\n'.format(mean(latency)))
+        file.write(str(hc.get_balance(recipient.public_key())['result']))
 
 
 if __name__ == '__main__':
@@ -161,4 +162,4 @@ if __name__ == '__main__':
 
     print("END : ", datetime.datetime.now())
 
-# python tools/transaction_sender.py --tps 100 --s 3"
+# python tools/transaction_sender.py --tps 100 --s 3 --output transaction_logger.txt"
