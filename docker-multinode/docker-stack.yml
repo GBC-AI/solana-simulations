@@ -1,6 +1,6 @@
 version: "3.8"
 
-# it work only on beta server
+# it works only on beta server
 services:
   config_generator:
     # TODO: create a separate image for python stuff
@@ -22,7 +22,7 @@ services:
       - config_generator
     command:
       bash -c 'sleep 3 && ./multinode-demo/setup.sh &&
-      nohup bash -c "./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &" &&
+      nohup bash -c "./multinode-demo/bootstrap-validator.sh --enable-rpc-transaction-history --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &" &&
       ./multinode-demo/faucet.sh'
     volumes:
       - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
@@ -61,7 +61,7 @@ services:
     image: python_trans_conf:5
     depends_on:
       - validator
-    command: bash -c "sleep 25 && python velas-ss/transaction_sender.py --tps 100 --s 5 --host http://genesis_node"
+    command: bash -c "sleep 25 && python velas-ss/transaction_sender.py --tps 4000 --s 10 --host http://genesis_node"
     volumes:
       - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
       - ../tools:/velas-ss/

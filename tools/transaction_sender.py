@@ -33,16 +33,17 @@ async def post_transaction(session, url, params, request_id, current_slot):
 
 
 async def post_transaction_checker(session, url, tx_sign, request_id):
+    # TODO: change getConfirmedTransaction to getSignature_status. DO multi check with list
     headers = {"Content-Type": "application/json"}
-    method = RPCMethod("getConfirmedTransaction")
-    data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method,
-                       "params": [tx_sign, "json"]})
+    method = RPCMethod("getSignatureStatuses")
+    data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": [[tx_sign]]})
+
     async with session.post(url, headers=headers, data=data) as response:
         response_text = await response.text()
-        if json.loads(response_text)["result"] is None:
+        if json.loads(response_text)["result"]['value'][0] is None:
             validating_list[tx_sign]['commitment_slot'] = None
         else:
-            validating_list[tx_sign]['commitment_slot'] = json.loads(response_text)["result"]['slot']
+            validating_list[tx_sign]['commitment_slot'] = json.loads(response_text)["result"]['value'][0]['slot']
 
 
 async def experiment_checker():
@@ -80,7 +81,7 @@ def get_recent_blockhash(url):
     request_id = 2
     method = RPCMethod("getRecentBlockhash")
     headers = {"Content-Type": "application/json"}
-    params = [{"commitment": "max"}]
+    params = [{"commitment": "single"}]
     data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": params})
     try:
         raw_response = requests.post(url, headers=headers, data=data)
@@ -107,7 +108,7 @@ def create_batch_transactions(n=10, sender=Account(4), recipient=Account(5), lam
 def check_transactions(output_path):
     incorrect_transaction_cnt = 0
     latency = []
-    time.sleep(20)
+    time.sleep(10)
     print("balance recipient:", hc.get_balance(recipient.public_key())['result'])
 
     asyncio.run(experiment_checker())
@@ -127,15 +128,14 @@ def check_transactions(output_path):
         file.write("{} Success: {} Error: {}\n".format(start, len(latency), incorrect_transaction_cnt))
         if len(latency):
             file.write('Mean latency: {} slots\n'.format(mean(latency)))
-        file.write(str(hc.get_balance(recipient.public_key())['result']))
+        file.write(str(hc.get_balance(recipient.public_key())['result']) + '\n')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run Velas performance test')
-    parser.add_argument('--tps', default=10, type=int, help='tps (batch transactions)')
+    parser.add_argument('--tps', default=100, type=int, help='tps (batch transactions)')
     parser.add_argument('--host', type=str, default="http://devnet.solana.com", help='host')
-    parser.add_argument('--airdrop', default=1234567890, type=int, help='airdrop value')
-    parser.add_argument('--s', default=1, type=int, help='duration of experiment in seconds')
+    parser.add_argument('--s', default=20, type=int, help='duration of experiment in seconds')
     parser.add_argument('--output', default='/mnt/logs/transaction_logger.txt', type=str, help='output file path')
     args = parser.parse_args()
 
@@ -144,8 +144,8 @@ if __name__ == '__main__':
     print("START : ", start)
     hc = Client(host)
     sender, recipient = Account(6), Account(7)
-    airdrop_request(host, sender.public_key(), args.airdrop)
-    time.sleep(5)
+    airdrop_request(host, sender.public_key(), (15000+args.tps)*args.tps*args.s)
+    time.sleep(2)
     print("balance sender:", hc.get_balance(sender.public_key())['result'])
     print("balance recipient:", hc.get_balance(recipient.public_key())['result'])
 
@@ -162,4 +162,4 @@ if __name__ == '__main__':
 
     print("END : ", datetime.datetime.now())
 
-# python tools/transaction_sender.py --tps 100 --s 3 --output transaction_logger.txt"
+# python tools/transaction_sender.py --tps 1000 --s 5 --output transaction_logger.txt"
