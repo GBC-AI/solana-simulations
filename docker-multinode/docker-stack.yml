@@ -1,24 +1,46 @@
 version: "3.8"
 
+# it works only on beta server
 services:
+  config_generator:
+    # TODO: create a separate image for python stuff
+    image: python:3.8-slim
+    command: bash -c "python config_generator.py --output /solana/config/config.toml"
+    volumes:
+      - /mnt/nfs_share/solana/ad159v2/config:/solana/config
+      - ../configs:/config_generator/
+    # this should be overwritten in the new image
+    working_dir: /config_generator
+    user: 10000:2001
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
   genesis_node:
     image: nikromanov/solana-velas:1.5.0
+    depends_on:
+      - config_generator
     command:
-      /bin/bash -c "rm -rf /mnt/logs/* &&
-                    ./multinode-demo/bootstrap-validator.sh --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &
-                    ./multinode-demo/faucet.sh"
+      bash -c 'sleep 3 && ./multinode-demo/setup.sh &&
+      nohup bash -c "./multinode-demo/bootstrap-validator.sh --enable-rpc-transaction-history --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &" &&
+      ./multinode-demo/faucet.sh'
     volumes:
-      - /mnt/nfs_share/solana/ad106_logs:/mnt/logs
+      - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
+      - /mnt/nfs_share/solana/ad159v2/config:/solana/config
+    environment:
+      - TOML_CONFIG=/solana/config/config.toml
     networks:
       - solana_net
-
   validator:
     image: nikromanov/solana-velas:1.5.0
     depends_on:
       - genesis_node
-    command: /bin/bash -c "sleep 5 && ./multinode-demo/validator.sh --entrypoint genesis_node:8001 --log /mnt/logs/solana_validator_`hostname`.txt"
+    command: bash -c "sleep 7 && ./multinode-demo/validator.sh --label `hostname` --entrypoint genesis_node:8001 --log /mnt/logs/solana_validator_`hostname`.txt"
     volumes:
-      - /mnt/nfs_share/solana/ad106_logs:/mnt/logs
+      - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
+      - /mnt/nfs_share/solana/ad159v2/config:/solana/config
+    environment:
+      - TOML_CONFIG=/solana/config/config.toml
     networks:
       - solana_net
     deploy:
@@ -34,6 +56,23 @@ services:
         reservations:
           cpus: '1'
           memory: 50M
+  transaction:
+    # This image must not be local
+    image: python_trans_conf:5
+    depends_on:
+      - validator
+    command: bash -c "sleep 25 && python velas-ss/transaction_sender.py --tps 4000 --s 10 --host http://genesis_node"
+    volumes:
+      - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
+      - ../tools:/velas-ss/
+    networks:
+      - solana_net
+    # NO ROOT!
+    user: 10000:2001
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
 
 networks:
   solana_net:
