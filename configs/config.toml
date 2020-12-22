@@ -44,7 +44,7 @@ DATA_PLANE_FANOUT = 200 # usize
 # milliseconds we sleep for between gossip requests
 GOSSIP_SLEEP_MILLIS = 102 # u64
 # The maximum size of a bloom filter
-MAX_CRDS_OBJECT_SIZE  = 928 # usize
+MAX_CRDS_OBJECT_SIZE = 928 # usize
 # The largest protocol header size
 MAX_PROTOCOL_HEADER_SIZE = 214 # u64
 
