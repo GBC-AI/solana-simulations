@@ -1,0 +1,157 @@
+2020-12-23 13:55:55,742 - INFO - START
+2020-12-23 13:55:55,774 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 13:55:56,188 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 125
+2020-12-23 13:55:58,193 - DEBUG - Making HTTP request. URI: http://devnet.solana.com:8899, RequestID: 1, Method: getBalance, Params: ('J3qYF7YJMKCqQke47UQwiHizgFUXapHxRxKmxbkar89x', {'commitment': 'max'})
+2020-12-23 13:55:58,197 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 13:56:03,478 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 83
+2020-12-23 13:56:03,479 - DEBUG - Getting response HTTP. URI: http://devnet.solana.com:8899, Method: getBalance, Response: {"jsonrpc":"2.0","result":{"context":{"slot":25326173},"value":6155384790},"id":1}
+
+2020-12-23 13:56:03,479 - INFO - balance sender:{'context': {'slot': 25326173}, 'value': 6155384790}
+2020-12-23 13:56:03,479 - DEBUG - Making HTTP request. URI: http://devnet.solana.com:8899, RequestID: 2, Method: getBalance, Params: ('J66fMDgSVVcdRgKucj1D5ssXAcQvg35JopvHNQo6cGY6', {'commitment': 'max'})
+2020-12-23 13:56:03,484 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 13:56:19,284 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 84
+2020-12-23 13:56:19,285 - DEBUG - Getting response HTTP. URI: http://devnet.solana.com:8899, Method: getBalance, Response: {"jsonrpc":"2.0","result":{"context":{"slot":25326213},"value":25582698555},"id":2}
+
+2020-12-23 13:56:19,285 - INFO - balance recipient:{'context': {'slot': 25326213}, 'value': 25582698555}
+2020-12-23 13:56:19,289 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 13:56:36,527 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 179
+2020-12-23 13:56:36,780 - DEBUG - (datetime.timedelta(seconds=41, microseconds=38259), 'start sending batch of 100 part 1')
+2020-12-23 13:56:36,780 - DEBUG - Using selector: KqueueSelector
+2020-12-23 13:57:10,512 - DEBUG - batch is sent
+2020-12-23 13:57:11,022 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 13:57:13,008 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 179
+2020-12-23 13:57:13,255 - DEBUG - (datetime.timedelta(seconds=77, microseconds=513662), 'start sending batch of 100 part 2')
+2020-12-23 13:57:13,256 - DEBUG - Using selector: KqueueSelector
+2020-12-23 13:58:28,520 - DEBUG - batch is sent
+2020-12-23 13:58:29,027 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 13:59:01,215 - INFO - START
+2020-12-23 13:59:01,224 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 13:59:53,290 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 125
+2020-12-23 13:59:53,291 - INFO - {"jsonrpc": "2.0", "id": 1, "method": "requestAirdrop", "params": ["J3qYF7YJMKCqQke47UQwiHizgFUXapHxRxKmxbkar89x", 7550000, {"commitment": "max"}]}<Response [200]>
+2020-12-23 13:59:55,296 - DEBUG - Making HTTP request. URI: http://devnet.solana.com:8899, RequestID: 1, Method: getBalance, Params: ('J3qYF7YJMKCqQke47UQwiHizgFUXapHxRxKmxbkar89x', {'commitment': 'max'})
+2020-12-23 13:59:55,302 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:00:10,025 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 83
+2020-12-23 14:00:10,026 - DEBUG - Getting response HTTP. URI: http://devnet.solana.com:8899, Method: getBalance, Response: {"jsonrpc":"2.0","result":{"context":{"slot":25326808},"value":6167595265},"id":1}
+
+2020-12-23 14:00:10,026 - INFO - balance sender:{'context': {'slot': 25326808}, 'value': 6167595265}
+2020-12-23 14:00:10,026 - DEBUG - Making HTTP request. URI: http://devnet.solana.com:8899, RequestID: 2, Method: getBalance, Params: ('J66fMDgSVVcdRgKucj1D5ssXAcQvg35JopvHNQo6cGY6', {'commitment': 'max'})
+2020-12-23 14:00:10,030 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:00:14,628 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 84
+2020-12-23 14:00:14,629 - DEBUG - Getting response HTTP. URI: http://devnet.solana.com:8899, Method: getBalance, Response: {"jsonrpc":"2.0","result":{"context":{"slot":25326820},"value":25584628080},"id":2}
+
+2020-12-23 14:00:14,629 - INFO - balance recipient:{'context': {'slot': 25326820}, 'value': 25584628080}
+2020-12-23 14:00:14,634 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:00:24,697 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 179
+2020-12-23 14:00:24,699 - INFO - start creating batch
+2020-12-23 14:00:24,915 - DEBUG - (datetime.timedelta(seconds=83, microseconds=700391), 'start sending batch of 100 part 1')
+2020-12-23 14:00:24,915 - DEBUG - Using selector: KqueueSelector
+2020-12-23 14:00:48,451 - DEBUG - batch is sent
+2020-12-23 14:00:48,959 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:00:49,318 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 179
+2020-12-23 14:00:49,319 - INFO - start creating batch
+2020-12-23 14:00:49,547 - DEBUG - (datetime.timedelta(seconds=108, microseconds=331977), 'start sending batch of 100 part 2')
+2020-12-23 14:00:49,547 - DEBUG - Using selector: KqueueSelector
+2020-12-23 14:01:35,466 - DEBUG - batch is sent
+2020-12-23 14:01:35,975 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:01:38,532 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 179
+2020-12-23 14:01:38,533 - INFO - start creating batch
+2020-12-23 14:01:38,760 - DEBUG - (datetime.timedelta(seconds=157, microseconds=545752), 'start sending batch of 100 part 3')
+2020-12-23 14:01:38,761 - DEBUG - Using selector: KqueueSelector
+2020-12-23 14:03:05,364 - DEBUG - batch is sent
+2020-12-23 14:03:05,873 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:03:34,647 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 179
+2020-12-23 14:03:34,648 - INFO - start creating batch
+2020-12-23 14:03:34,886 - DEBUG - (datetime.timedelta(seconds=273, microseconds=670972), 'start sending batch of 100 part 4')
+2020-12-23 14:03:34,886 - DEBUG - Using selector: KqueueSelector
+2020-12-23 14:04:01,892 - DEBUG - batch is sent
+2020-12-23 14:04:02,400 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:04:17,326 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 179
+2020-12-23 14:04:17,326 - INFO - start creating batch
+2020-12-23 14:04:17,642 - DEBUG - (datetime.timedelta(seconds=316, microseconds=427499), 'start sending batch of 100 part 5')
+2020-12-23 14:04:17,642 - DEBUG - Using selector: KqueueSelector
+2020-12-23 14:04:42,852 - DEBUG - batch is sent
+2020-12-23 14:04:43,357 - INFO - experiment is sent
+2020-12-23 14:05:23,361 - DEBUG - Making HTTP request. URI: http://devnet.solana.com:8899, RequestID: 3, Method: getBalance, Params: ('J66fMDgSVVcdRgKucj1D5ssXAcQvg35JopvHNQo6cGY6', {'commitment': 'max'})
+2020-12-23 14:05:23,364 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:05:48,791 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 84
+2020-12-23 14:05:48,792 - DEBUG - Getting response HTTP. URI: http://devnet.solana.com:8899, Method: getBalance, Response: {"jsonrpc":"2.0","result":{"context":{"slot":25327684},"value":25589592487},"id":3}
+
+2020-12-23 14:05:48,792 - INFO - balance recipient:{'context': {'slot': 25327684}, 'value': 25589592487}
+2020-12-23 14:05:48,792 - DEBUG - Using selector: KqueueSelector
+2020-12-23 14:06:20,389 - INFO - Success:123 Error:377
+2020-12-23 14:06:20,390 - INFO - Mean latency:26.13821138211382
+2020-12-23 14:06:20,391 - DEBUG - Making HTTP request. URI: http://devnet.solana.com:8899, RequestID: 4, Method: getBalance, Params: ('J66fMDgSVVcdRgKucj1D5ssXAcQvg35JopvHNQo6cGY6', {'commitment': 'max'})
+2020-12-23 14:06:20,394 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:06:23,298 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 84
+2020-12-23 14:06:23,299 - DEBUG - Getting response HTTP. URI: http://devnet.solana.com:8899, Method: getBalance, Response: {"jsonrpc":"2.0","result":{"context":{"slot":25327774},"value":25589592487},"id":4}
+
+2020-12-23 14:06:23,299 - INFO - END
+2020-12-23 14:16:19,997 - INFO - ------------START--------------
+2020-12-23 14:16:20,015 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:16:20,579 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 124
+2020-12-23 14:16:20,581 - INFO - {"jsonrpc": "2.0", "id": 1, "method": "requestAirdrop", "params": ["J3qYF7YJMKCqQke47UQwiHizgFUXapHxRxKmxbkar89x", 300200, {"commitment": "max"}]}<Response [200]>
+2020-12-23 14:16:22,583 - DEBUG - Making HTTP request. URI: http://devnet.solana.com:8899, RequestID: 1, Method: getBalance, Params: ('J3qYF7YJMKCqQke47UQwiHizgFUXapHxRxKmxbkar89x', {'commitment': 'max'})
+2020-12-23 14:16:22,587 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:16:28,576 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 83
+2020-12-23 14:16:28,577 - DEBUG - Getting response HTTP. URI: http://devnet.solana.com:8899, Method: getBalance, Response: {"jsonrpc":"2.0","result":{"context":{"slot":25329339},"value":6160160858},"id":1}
+
+2020-12-23 14:16:28,577 - INFO - balance sender:{'context': {'slot': 25329339}, 'value': 6160160858}
+2020-12-23 14:16:28,578 - DEBUG - Making HTTP request. URI: http://devnet.solana.com:8899, RequestID: 2, Method: getBalance, Params: ('J66fMDgSVVcdRgKucj1D5ssXAcQvg35JopvHNQo6cGY6', {'commitment': 'max'})
+2020-12-23 14:16:28,581 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:16:45,385 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 84
+2020-12-23 14:16:45,386 - DEBUG - Getting response HTTP. URI: http://devnet.solana.com:8899, Method: getBalance, Response: {"jsonrpc":"2.0","result":{"context":{"slot":25329383},"value":25589592487},"id":2}
+
+2020-12-23 14:16:45,387 - INFO - balance recipient:{'context': {'slot': 25329383}, 'value': 25589592487}
+2020-12-23 14:16:45,390 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:16:54,089 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 179
+2020-12-23 14:16:54,089 - INFO - start creating batch
+2020-12-23 14:16:54,114 - DEBUG - (datetime.timedelta(seconds=34, microseconds=116034), 'start sending batch of 10 part 1')
+2020-12-23 14:16:54,114 - DEBUG - Using selector: KqueueSelector
+2020-12-23 14:17:29,316 - DEBUG - batch is sent
+2020-12-23 14:17:29,821 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:17:44,674 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 179
+2020-12-23 14:17:44,675 - INFO - start creating batch
+2020-12-23 14:17:44,703 - DEBUG - (datetime.timedelta(seconds=84, microseconds=705166), 'start sending batch of 10 part 2')
+2020-12-23 14:17:44,703 - DEBUG - Using selector: KqueueSelector
+2020-12-23 14:18:20,119 - DEBUG - batch is sent
+2020-12-23 14:18:20,625 - INFO - experiment is sent
+2020-12-23 14:19:20,630 - DEBUG - Making HTTP request. URI: http://devnet.solana.com:8899, RequestID: 3, Method: getBalance, Params: ('J66fMDgSVVcdRgKucj1D5ssXAcQvg35JopvHNQo6cGY6', {'commitment': 'max'})
+2020-12-23 14:19:20,633 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:19:24,208 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 84
+2020-12-23 14:19:24,209 - DEBUG - Getting response HTTP. URI: http://devnet.solana.com:8899, Method: getBalance, Response: {"jsonrpc":"2.0","result":{"context":{"slot":25329793},"value":25589792577},"id":3}
+
+2020-12-23 14:19:24,210 - INFO - balance recipient:{'context': {'slot': 25329793}, 'value': 25589792577}
+2020-12-23 14:19:24,210 - DEBUG - Using selector: KqueueSelector
+2020-12-23 14:19:57,466 - INFO - Success:11 Error:9
+2020-12-23 14:19:57,466 - INFO - Mean latency:37
+2020-12-23 14:19:57,467 - DEBUG - Making HTTP request. URI: http://devnet.solana.com:8899, RequestID: 4, Method: getBalance, Params: ('J66fMDgSVVcdRgKucj1D5ssXAcQvg35JopvHNQo6cGY6', {'commitment': 'max'})
+2020-12-23 14:19:57,469 - DEBUG - Starting new HTTP connection (1): devnet.solana.com:8899
+2020-12-23 14:20:08,033 - DEBUG - http://devnet.solana.com:8899 "POST / HTTP/1.1" 200 84
+2020-12-23 14:20:08,034 - DEBUG - Getting response HTTP. URI: http://devnet.solana.com:8899, Method: getBalance, Response: {"jsonrpc":"2.0","result":{"context":{"slot":25329904},"value":25589792577},"id":4}
+
+2020-12-23 14:20:08,036 - INFO - END
+2020-12-23 14:23:10,981 - INFO - ------------START--------------
+2020-12-23 14:23:25,763 - INFO - {"jsonrpc": "2.0", "id": 1, "method": "requestAirdrop", "params": ["J3qYF7YJMKCqQke47UQwiHizgFUXapHxRxKmxbkar89x", 300200, {"commitment": "max"}]}<Response [200]>
+2020-12-23 14:23:40,525 - INFO - balance sender:{'context': {'slot': 25330453}, 'value': 6160461168}
+2020-12-23 14:24:01,003 - INFO - balance recipient:{'context': {'slot': 25330506}, 'value': 25589792577}
+2020-12-23 14:24:15,839 - INFO - start creating batch
+2020-12-23 14:25:00,547 - INFO - start creating batch
+2020-12-23 14:25:43,905 - INFO - experiment is sent
+2020-12-23 14:27:14,945 - INFO - balance recipient:{'context': {'slot': 25331008}, 'value': 25589992667}
+2020-12-23 14:27:59,904 - INFO - Success:3 Error:17
+2020-12-23 14:27:59,904 - INFO - Mean latency:57
+2020-12-23 14:28:00,249 - INFO - END
+2020-12-23 14:44:46,219 - INFO - ------------START--------------
+2020-12-23 14:44:46,575 - INFO - {"jsonrpc": "2.0", "id": 1, "method": "requestAirdrop", "params": ["J3qYF7YJMKCqQke47UQwiHizgFUXapHxRxKmxbkar89x", 7550000, {"commitment": "max"}]}<Response [200]>
+2020-12-23 14:45:12,259 - INFO - balance sender:{'context': {'slot': 25333786}, 'value': 6167711188}
+2020-12-23 14:45:19,575 - INFO - balance recipient:{'context': {'slot': 25333805}, 'value': 25590192757}
+2020-12-23 14:45:19,919 - INFO - start creating batch
+2020-12-23 14:46:11,185 - INFO - start creating batch
+2020-12-23 14:47:34,206 - INFO - start creating batch
+2020-12-23 14:48:19,082 - INFO - start creating batch
+2020-12-23 14:48:59,893 - INFO - start creating batch
+2020-12-23 14:49:40,893 - INFO - experiment is sent
+2020-12-23 14:50:41,251 - INFO - balance recipient:{'context': {'slot': 25334635}, 'value': 25595207465}
+2020-12-23 14:51:29,032 - INFO - Success:115 Error:385
+2020-12-23 14:51:29,032 - INFO - Mean latency:30.121739130434783
+2020-12-23 14:51:29,386 - INFO - END
