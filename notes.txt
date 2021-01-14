@@ -61,3 +61,5 @@ cd velas-ss && python config_generator.py && cd .. &&  cp "./velas-ss/generated/
 # использовать toml file parser для файлв config.
 # sender должен пуллится из хаба!
 # gitlab repositories and git dockerhub ? чтобы мы могли пушить образы
+
+python -c "from subprocess import Popen; import time ; process1 = Popen('docker stack deploy -c docker-multinode/docker-stack.yml solana_stack', shell=True); time.sleep(15) ; process2 = Popen('docker stack rm solana_stack', shell=True)"

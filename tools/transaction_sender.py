@@ -7,7 +7,7 @@ import argparse
 import time
 from typing import cast
 from statistics import mean
-import solana
+import logging
 
 from solana.system_program import TransferParams, transfer
 from solana.transaction import Transaction
@@ -74,7 +74,7 @@ def airdrop_request(url, pubkey, value):
     headers = {"Content-Type": "application/json"}
     params = [str(pubkey), value, {"commitment": "max"}]
     data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": params})
-    print(data, requests.post(url, headers=headers, data=data))
+    logging.info(str(data) + str(requests.post(url, headers=headers, data=data)))
 
 
 def get_recent_blockhash(url):
@@ -94,7 +94,7 @@ def get_recent_blockhash(url):
 def create_batch_transactions(n=10, sender=Account(4), recipient=Account(5), lamports=10000):
     blockhash_response = get_recent_blockhash(host)
     blockhash = Blockhash(blockhash_response["result"]["value"]["blockhash"])
-    print(datetime.datetime.now() - start, "start creating batch")
+    logging.info("start creating batch")
     batch_transactions = []
     for i in range(n):
         tx = Transaction().add(transfer(TransferParams(from_pubkey=sender.public_key(),
@@ -108,8 +108,8 @@ def create_batch_transactions(n=10, sender=Account(4), recipient=Account(5), lam
 def check_transactions(output_path):
     incorrect_transaction_cnt = 0
     latency = []
-    time.sleep(10)
-    print("balance recipient:", hc.get_balance(recipient.public_key())['result'])
+    time.sleep(20)
+    logging.info("balance recipient:" + str(hc.get_balance(recipient.public_key())['result']))
 
     asyncio.run(experiment_checker())
 
@@ -118,48 +118,56 @@ def check_transactions(output_path):
             incorrect_transaction_cnt += 1
         else:
             latency.append(validating_list[transaction]['commitment_slot'] - validating_list[transaction]['sent_slot'])
-    print("Success:", len(latency),
-          "Error:", incorrect_transaction_cnt)
+    logging.info("Success:" + str(len(latency)) + " Error:" + str(incorrect_transaction_cnt))
     if len(latency):
-        print('Mean latency:', mean(latency), 'slots')
+        logging.info('Mean latency:' + str(mean(latency)))
 
-    with open(output_path, "a") as file:
-        file.write(host+'\n')
-        file.write("{} Success: {} Error: {}\n".format(start, len(latency), incorrect_transaction_cnt))
+    with open(output_path, "a") as output_file:
+        simulation_result = {'start_time': start,
+                             'host': host,
+                             'tps': args.tps,
+                             'batches_seconds': args.s,
+                             'success_txn': len(latency),
+                             'failed_txn': incorrect_transaction_cnt,
+                             'recipient_balance': hc.get_balance(recipient.public_key())['result']}
         if len(latency):
-            file.write('Mean latency: {} slots\n'.format(mean(latency)))
-        file.write(str(hc.get_balance(recipient.public_key())['result']) + '\n')
+            simulation_result['mean_latency'] = mean(latency)
+        else:
+            simulation_result['mean_latency'] = None
+        json.dump(simulation_result, output_file, default=str)
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Run Velas performance test')
+    parser = argparse.ArgumentParser(description='Run Solana-velas performance test')
     parser.add_argument('--tps', default=100, type=int, help='tps (batch transactions)')
     parser.add_argument('--host', type=str, default="http://devnet.solana.com", help='host')
     parser.add_argument('--s', default=20, type=int, help='duration of experiment in seconds')
-    parser.add_argument('--output', default='/mnt/logs/transaction_logger.txt', type=str, help='output file path')
+    parser.add_argument('--output', default='/mnt/logs/', type=str, help='output folder path')
     args = parser.parse_args()
+    logging.basicConfig(filename=args.output + 'sender_tr.log', level=logging.INFO,
+                        format='%(asctime)s - %(levelname)s - %(message)s')
 
     host = args.host + ":8899"
     start = datetime.datetime.now()
-    print("START : ", start)
+    logging.info("------------START--------------")
     hc = Client(host)
-    sender, recipient = Account(6), Account(7)
+    sender, recipient = Account(4), Account(5)
     airdrop_request(host, sender.public_key(), (15000+args.tps)*args.tps*args.s)
     time.sleep(2)
-    print("balance sender:", hc.get_balance(sender.public_key())['result'])
-    print("balance recipient:", hc.get_balance(recipient.public_key())['result'])
+    logging.info("balance sender:" + str(hc.get_balance(sender.public_key())['result']))
+    logging.info("balance recipient:" + str(hc.get_balance(recipient.public_key())['result']))
 
     validating_list = {}
     for second in range(args.s):
         tx_list, slot = create_batch_transactions(args.tps, sender, recipient) # add slot to valid dict
-        print(datetime.datetime.now() - start, "start sending batch of {} part {}".format(args.tps, second+1))
+        logging.debug((datetime.datetime.now() - start, "start sending batch of {} part {}".format(args.tps, second+1)))
         asyncio.run(batch_sender(tx_list, slot))
-        print(datetime.datetime.now() - start, "batch is sent")
+        logging.debug("batch is sent")
         time.sleep(0.5)
-    print(datetime.datetime.now() - start, "experiment is sent")
+    logging.info("experiment is sent")
 
-    check_transactions(args.output)
+    check_transactions(args.output + 'simulation_result.json')
 
-    print("END : ", datetime.datetime.now())
+    logging.info("END")
 
-# python tools/transaction_sender.py --tps 1000 --s 5 --output transaction_logger.txt"
+# python tools/transaction_sender.py --tps 100 --s 5 --output 'my_vol/' "

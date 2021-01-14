@@ -7,6 +7,7 @@ certifi==2020.11.8
 cffi==1.14.3
 chardet==3.0.4
 construct==2.10.56
+docker==4.4.1
 h11==0.11.0
 httpcore==0.12.2
 httpx==0.16.1
@@ -15,6 +16,7 @@ json-rpc==1.13.0
 multidict==5.0.2
 pycparser==2.20
 PyNaCl==1.4.0
+PyYAML==5.3.1
 requests==2.25.0
 rfc3986==1.4.0
 six==1.15.0
@@ -22,4 +24,5 @@ sniffio==1.2.0
 solana==0.6.4
 typing-extensions==3.7.4.3
 urllib3==1.26.2
+websocket-client==0.57.0
 yarl==1.6.3
