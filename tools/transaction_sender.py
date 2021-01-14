@@ -18,9 +18,6 @@ from solana.blockhash import Blockhash
 from solana.rpc.types import RPCMethod, RPCResponse
 from base64 import b64encode
 
-logging.basicConfig(level='INFO')
-LOG = logging.getLogger(__name__)
-
 
 async def post_transaction(session, url, params, request_id, current_slot):
     headers = {"Content-Type": "application/json"}
