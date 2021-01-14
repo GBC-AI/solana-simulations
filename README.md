@@ -5,8 +5,7 @@
 $ docker build -t solana142 .
 ```
 
-2). "-it" will open shell inside ubuntu container
-
+2). "-it" will open shell inside ubuntu container  
 ```bash
 $ docker container run -it solana142
 ```
@@ -27,3 +26,6 @@ dockerfile for building image from sources.
 TOML_CONFIG=$PWD/config.toml ./multinode-demo/setup.sh
 TOML_CONFIG=$PWD/config.toml ./multinode-demo/bootstrap-validator.sh
 ```
+
+To download solana image with configs use:  
+```docker pull nikromanov/solana-velas:1.5.0```
