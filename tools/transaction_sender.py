@@ -18,6 +18,9 @@ from solana.blockhash import Blockhash
 from solana.rpc.types import RPCMethod, RPCResponse
 from base64 import b64encode
 
+logging.basicConfig(level='INFO')
+LOG = logging.getLogger(__name__)
+
 
 async def post_transaction(session, url, params, request_id, current_slot):
     headers = {"Content-Type": "application/json"}
@@ -134,7 +137,7 @@ def check_transactions(output_path):
             simulation_result['mean_latency'] = mean(latency)
         else:
             simulation_result['mean_latency'] = None
-        output_file.write(str(simulation_result)+'\n')
+        json.dump(simulation_result, output_file, default=str)
 
 
 if __name__ == '__main__':
@@ -170,4 +173,4 @@ if __name__ == '__main__':
 
     logging.info("END")
 
-# python tools/transaction_sender.py --tps 100 --s 5 --output '' "
+# python tools/transaction_sender.py --tps 100 --s 5 --output 'my_vol/' "
