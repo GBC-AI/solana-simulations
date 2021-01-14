@@ -8,7 +8,7 @@ services:
     command: bash -c "python config_generator.py --output /solana/config/config.toml"
     volumes:
       - /mnt/nfs_share/solana/ad159v2/config:/solana/config
-      - ../configs:/config_generator/
+      - /home/alexko/velas-ss/configs:/config_generator/
     # this should be overwritten in the new image
     working_dir: /config_generator
     user: 10000:2001
@@ -64,7 +64,7 @@ services:
     command: bash -c "sleep 25 && python velas-ss/transaction_sender.py --tps 100 --s 20 --host http://genesis_node"
     volumes:
       - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
-      - ../tools:/velas-ss/
+      - /home/alexko/velas-ss/tools:/velas-ss/
     networks:
       - solana_net
     # NO ROOT!

@@ -155,3 +155,17 @@
 2020-12-23 14:51:29,032 - INFO - Success:115 Error:385
 2020-12-23 14:51:29,032 - INFO - Mean latency:30.121739130434783
 2020-12-23 14:51:29,386 - INFO - END
+2021-01-12 15:05:17,711 - INFO - ------------START--------------
+2021-01-12 15:05:18,113 - INFO - {"jsonrpc": "2.0", "id": 1, "method": "requestAirdrop", "params": ["J3qYF7YJMKCqQke47UQwiHizgFUXapHxRxKmxbkar89x", 7550000, {"commitment": "max"}]}<Response [200]>
+2021-01-12 15:05:20,627 - INFO - balance sender:{'context': {'slot': 29612343}, 'value': 6160201480}
+2021-01-12 15:05:20,988 - INFO - balance recipient:{'context': {'slot': 29612343}, 'value': 25595207465}
+2021-01-12 15:05:21,396 - INFO - start creating batch
+2021-01-12 15:05:23,053 - INFO - start creating batch
+2021-01-12 15:05:24,645 - INFO - start creating batch
+2021-01-12 15:05:30,128 - INFO - start creating batch
+2021-01-12 15:05:31,817 - INFO - start creating batch
+2021-01-12 15:05:33,027 - INFO - experiment is sent
+2021-01-12 15:06:34,118 - INFO - balance recipient:{'context': {'slot': 29612528}, 'value': 25600232215}
+2021-01-12 15:06:36,955 - INFO - Success:500 Error:0
+2021-01-12 15:06:36,957 - INFO - Mean latency:4.962
+2021-01-12 15:06:37,369 - INFO - END

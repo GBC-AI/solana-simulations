@@ -108,7 +108,7 @@ def create_batch_transactions(n=10, sender=Account(4), recipient=Account(5), lam
 def check_transactions(output_path):
     incorrect_transaction_cnt = 0
     latency = []
-    time.sleep(60)
+    time.sleep(20)
     logging.info("balance recipient:" + str(hc.get_balance(recipient.public_key())['result']))
 
     asyncio.run(experiment_checker())
