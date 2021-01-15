@@ -150,6 +150,7 @@ if __name__ == '__main__':
     host = args.host + ":8899"
     start = datetime.datetime.now()
     logging.info("------------START--------------")
+    time.sleep(10)
     hc = Client(host)
     sender, recipient = Account(4), Account(5)
     airdrop_request(host, sender.public_key(), (15000+args.tps)*args.tps*args.s)

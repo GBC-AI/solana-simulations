@@ -50,7 +50,8 @@ K = [5, 10, 15 ,20]
 
 docker stack deploy -c docker-stack.yml solana_stack
 docker stack rm solana_stack
-rm -r ad159v2/logs/* ; rm -r ad159v2/config/*
+rm -rf /mnt/nfs_share/solana/ad159v2/logs/* ; rm -rf /mnt/nfs_share/solana/ad159v2/config/*
+# su - developer, passw in tg
 
 
 docker run -it -v /mnt/nfs_share/solana/exp1:/mnt/logs python_trans_conf:2 /bin/bash
