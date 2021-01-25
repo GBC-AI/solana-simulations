@@ -1,0 +1,80 @@
+version: "3.8"
+
+# it works only on beta server
+services:
+  config_generator:
+    # TODO: create a separate image for python stuff
+    image: python:3.8-slim
+    command: bash -c "python config_generator.py --output /solana/config/config.toml"
+    volumes:
+      - /mnt/nfs_share/solana/ad159v2/config:/solana/config
+      - /home/alexko/velas-ss/configs:/config_generator/
+    # this should be overwritten in the new image
+    working_dir: /config_generator
+    user: 10000:2001
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+  genesis_node:
+    image: nikromanov/solana-velas:1.5.0
+    depends_on:
+      - config_generator
+    command:
+      bash -c 'sleep 3 && ./multinode-demo/setup.sh &&
+      nohup bash -c "./multinode-demo/bootstrap-validator.sh --enable-rpc-transaction-history --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &" &&
+      ./multinode-demo/faucet.sh'
+    volumes:
+      - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
+      - /mnt/nfs_share/solana/ad159v2/config:/solana/config
+    environment:
+      - TOML_CONFIG=/solana/config/config.toml
+    networks:
+      - solana_net
+  validator:
+    image: nikromanov/solana-velas:1.5.0
+    depends_on:
+      - genesis_node
+    command: bash -c "sleep 7 && ./multinode-demo/validator.sh --label `hostname` --entrypoint genesis_node:8001 --log /mnt/logs/solana_validator_`hostname`.txt"
+    volumes:
+      - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
+      - /mnt/nfs_share/solana/ad159v2/config:/solana/config
+    environment:
+      - TOML_CONFIG=/solana/config/config.toml
+    networks:
+      - solana_net
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 10
+      restart_policy:
+        condition: none
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 50M
+  transaction:
+    # This image must not be local
+    image: python_trans_conf:5
+    depends_on:
+      - validator
+    command: bash -c "sleep 25 && python velas-ss/transaction_sender.py --tps 100 --s 20 --host http://genesis_node"
+    volumes:
+      - /mnt/nfs_share/solana/ad159v2/logs:/mnt/logs
+      - /home/alexko/velas-ss/tools:/velas-ss/
+    networks:
+      - solana_net
+    # NO ROOT!
+    user: 10000:2001
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+
+networks:
+  solana_net:
+    driver: overlay
+    attachable: true
