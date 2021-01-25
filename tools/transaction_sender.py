@@ -33,7 +33,7 @@ async def post_transaction(session, url, params, request_id, current_slot):
 
 
 async def post_transaction_checker(session, url, tx_sign, request_id):
-    # TODO: change getConfirmedTransaction to getSignature_status. DO multi check with list
+    # TODO: multi check with list
     headers = {"Content-Type": "application/json"}
     method = RPCMethod("getSignatureStatuses")
     data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": [[tx_sign]]})
@@ -108,7 +108,7 @@ def create_batch_transactions(n=10, sender=Account(4), recipient=Account(5), lam
 def check_transactions(output_path):
     incorrect_transaction_cnt = 0
     latency = []
-    time.sleep(20)
+    time.sleep(40)
     logging.info("balance recipient:" + str(hc.get_balance(recipient.public_key())['result']))
 
     asyncio.run(experiment_checker())
