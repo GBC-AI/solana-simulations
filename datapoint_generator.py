@@ -2,6 +2,7 @@ import os
 import time
 import yaml
 import random
+import tarfile
 from subprocess import Popen
 
 
@@ -24,14 +25,24 @@ def create_stack_file(logs_path, config_path, tps=2000, validators=4):
             yaml.dump(templates, fo, default_flow_style=False)
 
 
-def run_cluster(path=''):
+def gzip_datapoint(b_path, output_name):
+    tar = tarfile.open(b_path + output_name + ".tar.gz", "w:gz")
+    tar.add(b_path + output_name, arcname=output_name + 'tar')
+    tar.close()
+
+
+
+def run_cluster(b_path, name):
+    path = b_path + name + '/logs/'
     process1 = Popen('docker stack deploy -c '+path+'docker-stack.yml solana_stack', shell=True)
     time.sleep(540)
     process2 = Popen('docker stack rm solana_stack', shell=True)
     time.sleep(30)
+    gzip_datapoint(b_path, name)
 
-base_path = '/mnt/nfs_share/solana/ad160/'
-#base_path = '/Users/korg/PycharmProjects/velas-ss/ad160/'
+
+base_path = '/mnt/nfs_share/store1/solana/ad160/'
+
 try:
     time.sleep(1)
     original_umask = os.umask(0)
@@ -40,7 +51,7 @@ try:
 except:
     pass
 
-for i in range(32, 132):
+for i in range(90, 91):
     original_umask = os.umask(0)
     os.makedirs(base_path + str(i), mode=0o777)
     os.makedirs(base_path + str(i) + '/logs', mode=0o777)
@@ -49,5 +60,5 @@ for i in range(32, 132):
     create_stack_file(base_path + str(i) + '/logs', base_path + str(i) + '/config',
                       tps=random.choice(range(1500, 8000, 500)), validators=random.choice(range(3, 7)))
     time.sleep(2)
-    run_cluster(base_path + str(i) + '/logs/')
+    run_cluster(base_path, str(i))
 
