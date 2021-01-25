@@ -50,7 +50,8 @@ K = [5, 10, 15 ,20]
 
 docker stack deploy -c docker-stack.yml solana_stack
 docker stack rm solana_stack
-rm -r ad159v2/logs/* ; rm -r ad159v2/config/*
+rm -rf /mnt/nfs_share/solana/ad159v2/logs/* ; rm -rf /mnt/nfs_share/solana/ad159v2/config/*
+# su - developer, passw in tg
 
 
 docker run -it -v /mnt/nfs_share/solana/exp1:/mnt/logs python_trans_conf:2 /bin/bash
@@ -62,4 +63,3 @@ cd velas-ss && python config_generator.py && cd .. &&  cp "./velas-ss/generated/
 # sender должен пуллится из хаба!
 # gitlab repositories and git dockerhub ? чтобы мы могли пушить образы
 
-python -c "from subprocess import Popen; import time ; process1 = Popen('docker stack deploy -c docker-multinode/docker-stack.yml solana_stack', shell=True); time.sleep(15) ; process2 = Popen('docker stack rm solana_stack', shell=True)"
