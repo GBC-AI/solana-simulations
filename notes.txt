@@ -1,0 +1,65 @@
+X - контролируемые параметры (конфиг, который может варьировать разработчик)
+alpha - неконтролируемые параметры (количество нод, транзакции, византийские ноды)
+y - целевая функция. (TPS, latency, decentralization=больше нод, безопасность)
+(not)alpha - логи ноды, которые отображают проекция alpha.
+
+Подобрать такие X чтобы минимизировать влияние alpha на y. ( оптимизировать Y и уменьшить вариативность )
+
+docker build -t solana142 .
+docker container run -it solana142
+RUST_LOG='trace' USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh
+
+# подключаем CLI к кластеру. порт и http !
+solana config set --url http://192.168.16.2:8899/
+solana validators
+solana-keygen new --outfile my_solana_wallet.json
+solana airdrop 19 3rhTCqdChRSvHHrsfBFfS3Dn1u3QkZWkcH23cuVjcSiw
+solana-keygen new --no-passphrase --no-outfile
+solana balance 7h5eyxxXoJ6bq7wB1RQ8snUZBP47zdhXy8xVahtJC7a3
+solana transfer --from my_solana_wallet.json 2Mw7zXCXyNFgf6PdCXRF7HtFZL5U53TdGfKp4T923h1n 15 --fee-payer my_solana_wallet.json
+
+git clone https://github.com/velas/solana.git
+cd solana
+git pull
+git checkout 3692b67e6
+# last version from Victor
+
+# указать ENV с абсолютным путем! перед запуском команд | export переменных окружения.
+TOML_CONFIG=$PWD/config.toml ./multinode-demo/setup.sh
+TOML_CONFIG=$PWD/config.toml ./multinode-demo/bootstrap-validator.sh
+
+docker run -it -v /$PWD/generated_config:/solana/generated_config adb4c02c5f5c
+cp generated_config/config.toml .
+
+docker service logs -f {NAME_OF_THE_SERVICE}
+docker service ls
+
+
+docker run -it -v /Users/korg/PycharmProjects/velas-ss/configs/generated:/mnt_generated --name my_cont 17c4c7cdc673
+cp ../mnt_generated/config.toml .
+#??? USE_INSTALL=1 ./multinode-demo/setup.sh
+USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh
+
+docker run -it -v /Users/korg/PycharmProjects/velas-ss/configs/generated:/mnt_generated 17c4c7cdc673 /bin/bash -c "cp ../mnt_generated/config.toml . && USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh"
+docker run -it -v /Users/korg/PycharmProjects/velas-ss/configs/generated:/mnt_generated 17c4c7cdc673 /bin/bash -c "cp ../mnt_generated/config.toml . && USE_INSTALL=1 ./multinode-demo/setup.sh && USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh"
+
+1 min N trans per sec, on K nodes
+N = [10, 20, 50, 100, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]
+K = [5, 10, 15 ,20]
+найти диапазон равновесия на devnet?
+
+docker stack deploy -c docker-stack.yml solana_stack
+docker stack rm solana_stack
+rm -rf /mnt/nfs_share/solana/ad159v2/logs/* ; rm -rf /mnt/nfs_share/solana/ad159v2/config/*
+# su - developer, passw in tg
+
+
+docker run -it -v /mnt/nfs_share/solana/exp1:/mnt/logs python_trans_conf:2 /bin/bash
+cd velas-ss && python config_generator.py && cd .. &&  cp "./velas-ss/generated/config.toml" /mnt/logs && python velas-ss/transaction_sender.py --tps 100 --s 5
+
+# python tools/transaction_sender.py --tps 100 --s 3"
+# сохранить результаты в json
+# использовать toml file parser для файлв config.
+# sender должен пуллится из хаба!
+# gitlab repositories and git dockerhub ? чтобы мы могли пушить образы
+

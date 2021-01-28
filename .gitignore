@@ -1,4 +1,5 @@
 my_vol/
+dockers/
 notes.txt
 .idea/
 .ipynb_checkpoints/
@@ -6,6 +7,7 @@ transactions-sdk-generator.ipynb
 tools/simple_transaction_sender.py
 sender_tr.log
 simulation_result.json
+multichecker.ipynb
 
 # Don't add solana source code in this repo
 docker-multinode/solana/
