@@ -17,3 +17,10 @@ configs/generated/
 
 # all Python caches
 **/__pycache__/
+
+# ignore virtual environment
+venv/
+
+# ignore excess python files
+junk.py
+main.py
