@@ -22,20 +22,24 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='creating config file')
     parser.add_argument('--random', action='store_true', help='is random configs')
     parser.add_argument('--output', default="./generated/config.toml", type=str, help='output file path')
+    parser.add_argument('--dev', action='store_true', help='dev config')
     args = parser.parse_args()
 
-    constants = {}
-    file = open(args.output, "w")
-    with open("config.toml") as original_config_file:
-        for line in original_config_file:
-            line_details = line.split(" ")
-            if line[0] == "#" or line == "\n":
-                continue
-            if line_details[0][0] == "[":
-                file.write(line.strip()+"\n")
-                continue
-            if line_details[1] == '=':
-                value = line_details[2].replace("_", "")
-                value_type = line_details[4].strip()
-                constants[line_details[0]] = [value, value_type, random_value(value, value_type)]
-                file.write(line_details[0] + ' = ' + str(constants[line_details[0]][2]) + "\n")
+    if args.dev:
+        os.popen('cp ./generated/config.toml ' + args.output)
+    else:
+        constants = {}
+        file = open(args.output, "w")
+        with open("config.toml") as original_config_file:
+            for line in original_config_file:
+                line_details = line.split(" ")
+                if line[0] == "#" or line == "\n":
+                    continue
+                if line_details[0][0] == "[":
+                    file.write(line.strip()+"\n")
+                    continue
+                if line_details[1] == '=':
+                    value = line_details[2].replace("_", "")
+                    value_type = line_details[4].strip()
+                    constants[line_details[0]] = [value, value_type, random_value(value, value_type)]
+                    file.write(line_details[0] + ' = ' + str(constants[line_details[0]][2]) + "\n")

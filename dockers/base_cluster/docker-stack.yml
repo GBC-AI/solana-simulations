@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  genesis_node:
+    image: nikromanov/solana-velas:1.5.0
+    command:
+      bash -c 'sleep 3 && ./multinode-demo/setup.sh &&
+      nohup bash -c "./multinode-demo/bootstrap-validator.sh --enable-rpc-transaction-history --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &" &&
+      ./multinode-demo/faucet.sh'
+    volumes:
+      - /mnt/nfs_share/store2/solana_tim/logs:/mnt/logs
+    networks:
+      - solana_net
+  validator:
+    image: nikromanov/solana-velas:1.5.0
+    depends_on:
+      - genesis_node
+    command: bash -c "sleep 20 && ./multinode-demo/validator.sh --label `hostname` --entrypoint genesis_node:8001 --log /mnt/logs/solana_validator_`hostname`.txt"
+    volumes:
+      - /mnt/nfs_share/store2/solana_tim/logs:/mnt/logs
+    networks:
+      - solana_net
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 10
+      restart_policy:
+        condition: none
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 50M
+networks:
+  solana_net:
+    driver: overlay
+    attachable: true

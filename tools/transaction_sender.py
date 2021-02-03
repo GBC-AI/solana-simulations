@@ -129,7 +129,9 @@ def check_transactions(output_path):
                              'batches_seconds': args.s,
                              'success_txn': len(latency),
                              'failed_txn': incorrect_transaction_cnt,
-                             'recipient_balance': hc.get_balance(recipient.public_key())['result']}
+                             'recipient_balance': hc.get_balance(recipient.public_key())['result'],
+                             'start_sending_transactions': start_sending_transactions,
+                             'end_sending_transactions': end_sending_transactions}
         if len(latency):
             simulation_result['mean_latency'] = mean(latency)
         else:
@@ -159,12 +161,14 @@ if __name__ == '__main__':
     logging.info("balance recipient:" + str(hc.get_balance(recipient.public_key())['result']))
 
     validating_list = {}
+    start_sending_transactions = datetime.datetime.now()
     for second in range(args.s):
         tx_list, slot = create_batch_transactions(args.tps, sender, recipient) # add slot to valid dict
         logging.debug((datetime.datetime.now() - start, "start sending batch of {} part {}".format(args.tps, second+1)))
         asyncio.run(batch_sender(tx_list, slot))
         logging.debug("batch is sent")
         time.sleep(0.5)
+    end_sending_transactions = datetime.datetime.now()
     logging.info("experiment is sent")
 
     check_transactions(args.output + 'simulation_result.json')
