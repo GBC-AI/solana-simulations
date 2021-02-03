@@ -79,10 +79,10 @@ services:
     image: sync_watch:latest
     depends_on:
       - genesis_node
-    command: bash -c "python velas-ss/main.py -u http://genesis_node"
+    command: "-u http://genesis_node:8899"
     volumes:
-      - /home/ktima/velas_output:/velas-ss/output
-      - /home/ktima/sync_script_source:/velas-ss
+      - /mnt/nfs_share/store2/solana:/sync_watch/output
+      - /home/ktima/sync_script_source:/sync_watch
     networks:
       - solana_net
     # NO ROOT!
