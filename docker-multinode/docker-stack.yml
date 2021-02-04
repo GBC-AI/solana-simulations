@@ -79,7 +79,7 @@ services:
     image: sync_watch:latest
     depends_on:
       - genesis_node
-    command: bash -c "python velas-ss/main.py -u http://genesis_node"
+    command: " -u http://genesis_node"
     volumes:
       - /home/ktima/velas_output:/velas-ss/output
       - /home/ktima/sync_script_source:/velas-ss
