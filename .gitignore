@@ -19,7 +19,3 @@ configs/generated/
 
 # ignore virtual environment
 venv/
-
-# ignore excess python files
-junk.py
-main.py
