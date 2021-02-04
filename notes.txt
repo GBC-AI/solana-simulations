@@ -31,12 +31,7 @@ TOML_CONFIG=$PWD/config.toml ./multinode-demo/bootstrap-validator.sh
 docker run -it -v /$PWD/generated_config:/solana/generated_config adb4c02c5f5c
 cp generated_config/config.toml .
 
-docker service logs -f {NAME_OF_THE_SERVICE}
-docker service ls
 
-
-docker run -it -v /Users/korg/PycharmProjects/velas-ss/configs/generated:/mnt_generated --name my_cont 17c4c7cdc673
-cp ../mnt_generated/config.toml .
 #??? USE_INSTALL=1 ./multinode-demo/setup.sh
 USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh
 
@@ -52,7 +47,6 @@ python datapoint_generator.py --start 44
 
 
 docker run -it -v /mnt/nfs_share/solana/exp1:/mnt/logs python_trans_conf:2 /bin/bash
-cd velas-ss && python config_generator.py && cd .. &&  cp "./velas-ss/generated/config.toml" /mnt/logs && python velas-ss/transaction_sender.py --tps 100 --s 5
 
 
 # sender должен пуллится из хаба!

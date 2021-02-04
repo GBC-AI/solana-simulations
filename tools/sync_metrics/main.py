@@ -1,4 +1,4 @@
-from tools.sync_metrics.utils import *
+from utils import *
 from time import localtime, strftime, sleep
 from argparse import ArgumentParser
 import os
@@ -13,10 +13,9 @@ if __name__ == '__main__':
     parser.add_argument("-o", "--output", help="path to the result file", type=str, default="output/sync_result.txt")
     parser.add_argument("-u", "--url", help="Cluster URL", type=str, default="https://devnet.solana.com")
     args = parser.parse_args()
-    sleep(20)
+    sleep(10)
     if not os.path.isdir(args.output.split('/')[0]):
         os.mkdir(args.output.split('/')[0])
-    i = 0
     with open(args.output, 'a') as outfile:
         while True:
             d = {}
@@ -33,7 +32,5 @@ if __name__ == '__main__':
             json.dump(d, outfile)
             outfile.write('\n')
             outfile.write('\n')
-            sleep(5)
-            i += 1
-            if i == 40:
-                break
+            sleep(10)
+

@@ -16,6 +16,7 @@ def create_stack_file(logs_path, config_path, tps=2000, validators=4):
         templates['services']['validator']['volumes'][0] = logs_path + ':/mnt/logs'
         templates['services']['validator']['volumes'][1] = config_path + ':/solana/config'
         templates['services']['transaction']['volumes'][0] = logs_path + ':/mnt/logs'
+        templates['services']['sync_watcher']['volumes'][0] = logs_path + ':/sync_watch/output'
 
         templates['services']['validator']['deploy']['replicas'] = validators
         templates['services']['transaction']['command'] = 'bash -c "sleep 15 && python velas-ss/transaction_sender.py --tps '+\
