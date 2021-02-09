@@ -46,9 +46,16 @@ rm -rf /mnt/nfs_share/solana/ad159v2/logs/* ; rm -rf /mnt/nfs_share/solana/ad159
 python datapoint_generator.py --start 44
 
 
-docker run -it -v /mnt/nfs_share/solana/exp1:/mnt/logs python_trans_conf:2 /bin/bash
-
-
 # sender должен пуллится из хаба!
 # gitlab repositories and git dockerhub ? чтобы мы могли пушить образы
 
+solana config set --url http://genesis_node:8899
+solana-keygen new
+solana airdrop 5000
+solana-keygen new -o ~/validator-stake-keypair2.json
+solana create-stake-account ~/validator-stake-keypair2.json 100
+solana delegate-stake ~/validator-stake-keypair.json 5aW4ePkgWVbph3Xxj1UVxDg2jsZcwh7ERxCWuWaHAv7P
+
+solana leader-schedule
+
+curl http://genesis_node:8899 -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1, "method":"getVoteAccounts"}'

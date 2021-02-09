@@ -33,7 +33,7 @@ services:
     image: nikromanov/solana-velas:1.5.0
     depends_on:
       - genesis_node
-    command: bash -c "sleep 7 && RUST_LOG='trace' ./multinode-demo/validator.sh --label `hostname` --entrypoint genesis_node:8001 --log /mnt/logs/solana_validator_`hostname`.txt"
+    command: bash -c "sleep 7 && RUST_LOG='trace' ./multinode-demo/validator.sh --label `hostname` --entrypoint genesis_node:8001  --rpc-port 8899 --log /mnt/logs/solana_validator_`hostname`.txt"
     volumes:
       - /mnt/nfs_share/store2/solana/dev/logs:/mnt/logs
       - /mnt/nfs_share/store2/solana/dev/config:/solana/config

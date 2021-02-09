@@ -1,31 +1,20 @@
-#### How to run Solana single-local-node
+#Generating datapoints:
 
-1). Building takes  more than 10 mins, (900 mb image).
-```bash
-$ docker build -t solana142 .
-```
+#### 1. To download/build solana (and other) images:  
 
-2). "-it" will open shell inside ubuntu container  
-```bash
-$ docker container run -it solana142
-```
+    docker pull nikromanov/solana-velas:1.5.0  #(both Alpha and Beta servers)
+    docker pull python:3.8-slim
+    docker build -t "python_trans_conf:5" .
+    docker build -t "python_trans_conf:5" .\dockers\docker_sync_watcher
 
-3). Run a validator in VM shell. You will see a lot of logs:)  
-```bash
-$ USE_INSTALL=1 ./multinode-demo/bootstrap-validator.sh
-```
+#### 2. Run datapoint_generator
 
-### /docker-two 
-docker-compose for running 2 nodes in compose-network. Use SHELL from 3rd container for using solana CLI and creating transactions.
+    su - developer #+password
+    cd velas-ss #go to the root velas-ss
+    python datapoint_generator.py --start X #name the folder 
 
-### /docker-solana-config
-dockerfile for building image from sources. 
-```
-# to start node: 
+#### 3. Result
 
-TOML_CONFIG=$PWD/config.toml ./multinode-demo/setup.sh
-TOML_CONFIG=$PWD/config.toml ./multinode-demo/bootstrap-validator.sh
-```
+will creating folder at
 
-To download solana image with configs use:  
-```docker pull nikromanov/solana-velas:1.5.0```
+    /mnt/nfs_share/store2/solana/datapoints/X

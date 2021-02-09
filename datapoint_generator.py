@@ -35,7 +35,7 @@ def gzip_datapoint(b_path, output_name):
 def run_cluster(b_path, name):
     path = b_path + name + '/logs/'
     process1 = Popen('docker stack deploy -c '+path+'docker-stack.yml solana_stack', shell=True)
-    time.sleep(1200)
+    time.sleep(3000)
     process2 = Popen('docker stack rm solana_stack', shell=True)
     time.sleep(30)
     gzip_datapoint(b_path, name)
