@@ -16,21 +16,20 @@ if __name__ == '__main__':
     sleep(10)
     if not os.path.isdir(args.output.split('/')[0]):
         os.mkdir(args.output.split('/')[0])
-    with open(args.output, 'a') as outfile:
-        while True:
-            d = {}
-            ips = get_cluster_info(args.url, 4)
-            nodes_ips = ['http://' + i for i in ips if i is not None]
-            requests_time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+    while True:
+        d = {}
+        ips = get_cluster_info(args.url, 4)
+        nodes_ips = ['http://' + i for i in ips if i is not None]
+        requests_time = strftime("%Y-%m-%d %H:%M:%S", localtime())
 
-            nodes_slot_data = asyncio.run(batch_info(nodes_ips))
-            clean_slot_data = [dat for dat in nodes_slot_data if (isinstance(dat, dict) and
-                                                                  isinstance(dat['slot'], int) and
-                                                                  isinstance(dat['last_block'], int))]
-            d[requests_time] = {'sync_data': clean_slot_data, 'skip_rate': count_skip_rate(args.url, 200),
-                                'total_nods': len(ips)}
+        nodes_slot_data = asyncio.run(batch_info(nodes_ips))
+        clean_slot_data = [dat for dat in nodes_slot_data if (isinstance(dat, dict) and
+                                                              isinstance(dat['slot'], int) and
+                                                              isinstance(dat['last_block'], int))]
+        d[requests_time] = {'sync_data': clean_slot_data, 'skip_rate': count_skip_rate(args.url, 100),
+                            'total_nodes': len(ips), 'rpc_ips': ips}
+        with open(args.output, 'a') as outfile:
             json.dump(d, outfile)
             outfile.write('\n')
-            outfile.write('\n')
-            sleep(10)
+        sleep(15)
 

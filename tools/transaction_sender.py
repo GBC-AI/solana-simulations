@@ -141,44 +141,49 @@ def check_transactions(output_path):
 
 
 def multi_stacking(host_connection, path='/Users/korg/PycharmProjects/velas-ss/keys/'):
+    time.sleep(120)
     i = 0
-    while i < 5:
+    while i < 6:
         i += 1
         time.sleep(30)
         nodes = host_connection.get_vote_accounts()
         vote_accounts_address = [x['votePubkey'] for x in nodes['result']['current']]
         delinquent_address = [x['votePubkey'] for x in nodes['result']['delinquent']]
         logging.info(str(vote_accounts_address) + str(delinquent_address))
-        share_active = [0, 0]
-        for v in nodes['result']['current']:
-            if v['epochVoteAccount'] and v['activatedStake'] > 0:
-                share_active[0] += 1
-            else:
-                share_active[1] += 1
-        logging.info(str(share_active))
-        if sum(share_active) > 2 and share_active[1] * 2 < share_active[0]:
+        if len(vote_accounts_address) > 2:
+            logging.info("get_vote_accounts() : " + str(nodes))
             break
-        else:
-            logging.info("get_vote_accounts()" + str(nodes))
     try:
         subprocess.check_output('solana config set --url ' + host, shell=True)
-        try:
-            logging.info(subprocess.check_output('solana validators', shell=True))
-        except Exception as e:
-            logging.info("no even version : " + 'solana config set --url ' + host + str(e.__class__))
+        logging.info(subprocess.check_output('solana validators', shell=True))
         subprocess.check_output('solana-keygen new  --no-passphrase --force', shell=True)
-        logging.info('keygen created')
         logging.info(subprocess.check_output('solana airdrop 10', shell=True))
-        time.sleep(10)
+        time.sleep(15)
         for v in vote_accounts_address:
             subprocess.check_output('solana-keygen new -o ' + path + v + '.json --no-passphrase --force', shell=True)
             time.sleep(1)
             subprocess.check_output('solana create-stake-account ' + path + v + '.json 1', shell=True)
             time.sleep(1)
             logging.info(subprocess.check_output('solana delegate-stake ' + path + v + '.json ' + v, shell=True))
-        time.sleep(120)
-        logging.info(str(host_connection.get_vote_accounts()))
+
+        i = 0
+        while i < 10:
+            i += 1
+            time.sleep(60)
+            nodes = host_connection.get_vote_accounts()
+            vote_accounts_address = [x['votePubkey'] for x in nodes['result']['current']]
+            delinquent_address = [x['votePubkey'] for x in nodes['result']['delinquent']]
+            share_active = [0, 0]
+            for v in nodes['result']['current']:
+                if v['epochVoteAccount'] and v['activatedStake'] > 0:
+                    share_active[0] += 1
+                else:
+                    share_active[1] += 1
+            logging.info(str(share_active))
+            if sum(share_active) > 2 and share_active[1] + 1 < share_active[0]:
+                break
         logging.info(subprocess.check_output('solana validators', shell=True))
+        logging.info(str(host_connection.get_vote_accounts()))
     except Exception as e:
         logging.info("not stacked! : " + str(e.__class__))
 
@@ -201,6 +206,7 @@ if __name__ == '__main__':
     sender, recipient = Account(4), Account(5)
     airdrop_request(host, sender.public_key(), (15000+args.tps)*args.tps*args.s)
     time.sleep(2)
+    logging.info(str(args.tps))
     logging.info("balance sender:" + str(hc.get_balance(sender.public_key())['result']))
     logging.info("balance recipient:" + str(hc.get_balance(recipient.public_key())['result']))
 
@@ -218,6 +224,6 @@ if __name__ == '__main__':
     logging.info("experiment is sent")
 
     check_transactions(args.output + 'simulation_result.json')
-    logging.info("END")
+    logging.info("---END---")
 
 # python tools/transaction_sender.py --tps 100 --s 5 --output 'my_vol/' "

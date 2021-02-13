@@ -35,7 +35,14 @@ def gzip_datapoint(b_path, output_name):
 def run_cluster(b_path, name):
     path = b_path + name + '/logs/'
     process1 = Popen('docker stack deploy -c '+path+'docker-stack.yml solana_stack', shell=True)
-    time.sleep(1200)
+    time.sleep(300)
+    extra_time = 0
+    while extra_time < 14:
+        time.sleep(60)
+        if os.path.isfile(path+'simulation_result.json'):
+            break
+        else:
+            extra_time += 1
     process2 = Popen('docker stack rm solana_stack', shell=True)
     time.sleep(30)
     #gzip_datapoint(b_path, name)
@@ -62,6 +69,6 @@ for i in range(args.start, args.start + args.n):
     os.makedirs(base_path + str(i) + '/config', mode=0o777)
     os.umask(original_umask)
     create_stack_file(base_path + str(i) + '/logs', base_path + str(i) + '/config',
-                      tps=random.choice(range(200, 5000, 10)), validators=random.choice(range(4, 8)))
+                      tps=random.choice(range(100, 4000, 10)), validators=random.choice(range(3, 7)))
     time.sleep(2)
     run_cluster(base_path, str(i))

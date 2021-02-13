@@ -60,3 +60,5 @@ curl http://genesis_node:8899 -X POST -H "Content-Type: application/json" -d '{"
 docker run -it -v /Users/korg/PycharmProjects/velas-ss/tools:/velas-ss/ -v /Users/korg/PycharmProjects/velas-ss/my_vol:/mnt/logs 48fe17c93373 python velas-ss/transaction_sender.py --tps 200 --s 5
 
 docker run -it -v /home/alexko/velas-ss/tools:/velas-ss/ -v /home/alexko/velas-ss/my_vol:/mnt/logs 6fa7f2d6d299 python velas-ss/transaction_sender.py --tps 200 --s 5
+
+docker run -it -v /home/alexko/velas-ss/tools:/velas-ss/
