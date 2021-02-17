@@ -4,7 +4,7 @@ version: "3.8"
 services:
   config_generator:
     image: python:3.8-slim
-    command: bash -c "python config_generator.py --output /solana/config/config.toml --random"
+    command: bash -c "python config_generator.py --output /solana/config/config.toml --dev"
     volumes:
       - /mnt/nfs_share/store2/solana/dev/config:/solana/config
       - /home/alexko/velas-ss/configs:/config_generator/
@@ -18,7 +18,7 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
-        window: 120s
+        window: 60s
   genesis_node:
     image: nikromanov/solana-velas:1.5.0
     depends_on:
@@ -52,11 +52,11 @@ services:
         max_replicas_per_node: 10
       resources:
         limits:
-          cpus: '4'
-          memory: 4G
+          cpus: '22'
+          memory: 16G
         reservations:
-          cpus: '1'
-          memory: 50M
+          cpus: '4'
+          memory: 500MB
   transaction:
     # This image must not be local
     image: python_trans_conf:5

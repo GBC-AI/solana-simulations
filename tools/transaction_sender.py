@@ -109,7 +109,7 @@ def create_batch_transactions(n=10, sender=Account(4), recipient=Account(5), lam
 def check_transactions(output_path):
     incorrect_transaction_cnt = 0
     latency = []
-    time.sleep(40)
+    time.sleep(120)
     logging.info("balance recipient:" + str(hc.get_balance(recipient.public_key())['result']))
 
     asyncio.run(experiment_checker())
@@ -140,7 +140,7 @@ def check_transactions(output_path):
         json.dump(simulation_result, output_file, default=str)
 
 
-def multi_stacking(host_connection, path='/Users/korg/PycharmProjects/velas-ss/keys/'):
+def multi_stacking(host_connection, path):
     time.sleep(120)
     i = 0
     while i < 6:
@@ -206,7 +206,7 @@ if __name__ == '__main__':
     sender, recipient = Account(4), Account(5)
     airdrop_request(host, sender.public_key(), (15000+args.tps)*args.tps*args.s)
     time.sleep(2)
-    logging.info(str(args.tps))
+    logging.info("TPS: "+str(args.tps))
     logging.info("balance sender:" + str(hc.get_balance(sender.public_key())['result']))
     logging.info("balance recipient:" + str(hc.get_balance(recipient.public_key())['result']))
 
