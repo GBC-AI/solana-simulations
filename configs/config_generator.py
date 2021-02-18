@@ -8,12 +8,12 @@ def random_value(value, dtype='usize'):
 
     if dtype == 'f64':
         value = float(value)
-        value_list.extend([value * 1.1, value * 0.9])
+        value_list.extend([value * 2, value * 0.5])
     else:
         value = int(value)
-        value_list.extend([int(value * 1.1), int(value * 0.9)])
+        value_list.extend([int(value * 2), int(value * 0.5)])
     if args.random:
-        return random.choice(value_list)
+        return random.choices(value_list, weights=(0.8, 0.1, 0.1))[0]
     else:
         return value
 

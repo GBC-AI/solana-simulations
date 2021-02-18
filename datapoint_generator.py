@@ -20,7 +20,7 @@ def create_stack_file(logs_path, config_path, tps=2000, validators=4):
 
         templates['services']['validator']['deploy']['replicas'] = validators
         templates['services']['transaction']['command'] = 'bash -c "sleep 15 && python velas-ss/transaction_sender.py --tps '+\
-                                                   str(tps)+' --s 20 --host http://genesis_node"'
+                                                   str(tps)+' --s 10 --host http://genesis_node"'
 
         with open(logs_path + '/docker-stack.yml', 'w') as fo:
             yaml.dump(templates, fo, default_flow_style=False)
@@ -35,10 +35,17 @@ def gzip_datapoint(b_path, output_name):
 def run_cluster(b_path, name):
     path = b_path + name + '/logs/'
     process1 = Popen('docker stack deploy -c '+path+'docker-stack.yml solana_stack', shell=True)
-    time.sleep(3000)
+    time.sleep(120)
+    extra_time = 0
+    while extra_time < 25:
+        time.sleep(60)
+        if os.path.isfile(path+'simulation_result.json') or not os.path.exists(path+'solana_genesis_node.txt'):
+            break
+        else:
+            extra_time += 1
     process2 = Popen('docker stack rm solana_stack', shell=True)
     time.sleep(30)
-    gzip_datapoint(b_path, name)
+    #gzip_datapoint(b_path, name)
 
 
 parser = argparse.ArgumentParser(description='Run Solana-velas performance test')
@@ -46,7 +53,7 @@ parser.add_argument('--start', default=1, type=int, help='first number of the ex
 parser.add_argument('--n', default=1, type=int, help='number of the experiment s')
 args = parser.parse_args()
 
-base_path = '/mnt/nfs_share/store2/solana/datapoints/'
+base_path = '/mnt/nfs_share/store2/solana/datapoints2/'
 try:
     time.sleep(1)
     original_umask = os.umask(0)
@@ -61,7 +68,9 @@ for i in range(args.start, args.start + args.n):
     os.makedirs(base_path + str(i) + '/logs', mode=0o777)
     os.makedirs(base_path + str(i) + '/config', mode=0o777)
     os.umask(original_umask)
-    create_stack_file(base_path + str(i) + '/logs', base_path + str(i) + '/config',
-                      tps=random.choice(range(1000, 5000, 50)), validators=random.choice(range(3, 5)))
+    create_stack_file(base_path + str(i) + '/logs',
+                      base_path + str(i) + '/config',
+                      tps=random.choice(range(1000, 10000, 100)),
+                      validators=random.choice(range(3, 7)))
     time.sleep(2)
     run_cluster(base_path, str(i))

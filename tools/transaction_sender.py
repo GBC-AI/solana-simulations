@@ -8,6 +8,7 @@ import time
 from typing import cast
 from statistics import mean
 import logging
+import subprocess
 
 from solana.system_program import TransferParams, transfer
 from solana.transaction import Transaction
@@ -115,7 +116,7 @@ def create_batch_transactions(n=10, sender=Account(4), recipient=Account(5), lam
 def check_transactions(output_path):
     incorrect_transaction_cnt = 0
     latency = []
-    time.sleep(40)
+    time.sleep(120)
     logging.info("balance recipient:" + str(hc.get_balance(recipient.public_key())['result']))
 
     asyncio.run(experiment_checker())
@@ -146,6 +147,54 @@ def check_transactions(output_path):
         json.dump(simulation_result, output_file, default=str)
 
 
+def multi_stacking(host_connection, path):
+    time.sleep(120)
+    i = 0
+    while i < 6:
+        i += 1
+        time.sleep(30)
+        nodes = host_connection.get_vote_accounts()
+        vote_accounts_address = [x['votePubkey'] for x in nodes['result']['current']]
+        delinquent_address = [x['votePubkey'] for x in nodes['result']['delinquent']]
+        logging.info(str(vote_accounts_address) + str(delinquent_address))
+        if len(vote_accounts_address) > 2:
+            logging.info("get_vote_accounts() : " + str(nodes))
+            break
+    try:
+        subprocess.check_output('solana config set --url ' + host, shell=True)
+        logging.info(subprocess.check_output('solana validators', shell=True))
+        subprocess.check_output('solana-keygen new  --no-passphrase --force', shell=True)
+        logging.info(subprocess.check_output('solana airdrop 10', shell=True))
+        time.sleep(15)
+        for v in vote_accounts_address:
+            subprocess.check_output('solana-keygen new -o ' + path + v + '.json --no-passphrase --force', shell=True)
+            time.sleep(1)
+            subprocess.check_output('solana create-stake-account ' + path + v + '.json 1', shell=True)
+            time.sleep(1)
+            logging.info(subprocess.check_output('solana delegate-stake ' + path + v + '.json ' + v, shell=True))
+
+        i = 0
+        while i < 10:
+            i += 1
+            time.sleep(60)
+            nodes = host_connection.get_vote_accounts()
+            vote_accounts_address = [x['votePubkey'] for x in nodes['result']['current']]
+            delinquent_address = [x['votePubkey'] for x in nodes['result']['delinquent']]
+            share_active = [0, 0]
+            for v in nodes['result']['current']:
+                if v['epochVoteAccount'] and v['activatedStake'] > 0:
+                    share_active[0] += 1
+                else:
+                    share_active[1] += 1
+            logging.info(str(share_active))
+            if sum(share_active) > 2 and share_active[1] + 1 < share_active[0]:
+                break
+        logging.info(subprocess.check_output('solana validators', shell=True))
+        logging.info(str(host_connection.get_vote_accounts()))
+    except Exception as e:
+        logging.info("not stacked! : " + str(e.__class__))
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run Solana-velas performance test')
     parser.add_argument('--tps', default=100, type=int, help='tps (batch transactions)')
@@ -164,8 +213,11 @@ if __name__ == '__main__':
     sender, recipient = Account(4), Account(5)
     airdrop_request(host, sender.public_key(), (15000+args.tps)*args.tps*args.s)
     time.sleep(2)
+    logging.info("TPS: "+str(args.tps))
     logging.info("balance sender:" + str(hc.get_balance(sender.public_key())['result']))
     logging.info("balance recipient:" + str(hc.get_balance(recipient.public_key())['result']))
+
+    multi_stacking(hc, args.output)
 
     validating_list = {}
     start_sending_transactions = datetime.datetime.now()
@@ -179,7 +231,6 @@ if __name__ == '__main__':
     logging.info("experiment is sent")
 
     check_transactions(args.output + 'simulation_result.json')
-
-    logging.info("END")
+    logging.info("---END---")
 
 # python tools/transaction_sender.py --tps 100 --s 5 --output 'my_vol/' "

@@ -4,7 +4,7 @@ version: "3.8"
 services:
   config_generator:
     image: python:3.8-slim
-    command: bash -c "python config_generator.py --output /solana/config/config.toml --dev"
+    command: bash -c "python config_generator.py --output /solana/config/config.toml --random"
     volumes:
       - /mnt/nfs_share/store2/solana/dev/config:/solana/config
       - /home/alexko/velas-ss/configs:/config_generator/
@@ -14,13 +14,18 @@ services:
       placement:
         constraints:
           - node.role==manager
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
   genesis_node:
     image: nikromanov/solana-velas:1.5.0
     depends_on:
       - config_generator
     command:
       bash -c 'sleep 3 && ./multinode-demo/setup.sh &&
-      nohup bash -c "./multinode-demo/bootstrap-validator.sh --enable-rpc-transaction-history --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &" &&
+      nohup bash -c "RUST_LOG='trace' ./multinode-demo/bootstrap-validator.sh --enable-rpc-transaction-history --gossip-host genesis_node --log /mnt/logs/solana_genesis_node.txt &" &&
       ./multinode-demo/faucet.sh'
     volumes:
       - /mnt/nfs_share/store2/solana/dev/logs:/mnt/logs
@@ -45,15 +50,13 @@ services:
       replicas: 3
       placement:
         max_replicas_per_node: 10
-      restart_policy:
-        condition: none
       resources:
         limits:
-          cpus: '4'
-          memory: 4G
+          cpus: '20'
+          memory: 16G
         reservations:
-          cpus: '1'
-          memory: 50M
+          cpus: '2'
+          memory: 500M
   transaction:
     # This image must not be local
     image: python_trans_conf:5
@@ -66,7 +69,7 @@ services:
     networks:
       - solana_net
     # NO ROOT!
-    user: 10000:2001
+    # user: 10000:2001
     deploy:
       placement:
         constraints:

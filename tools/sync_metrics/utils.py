@@ -16,7 +16,7 @@ def count_skip_rate(url, num_slots, id1="1", id2="2", start_slot=None):
     confirmed_blocks_data = json.dumps({"jsonrpc": "2.0", "id": id2, "method": "getConfirmedBlocks", "params": params})
     response_conf_blocks = requests.post(url, headers=headers, data=confirmed_blocks_data)
     confirmed_blocks_list = response_conf_blocks.json()['result']
-    return (1 - (len(confirmed_blocks_list) / (num_slots+1))) * 100
+    return 1 - (len(confirmed_blocks_list) / (num_slots+1))
 
 
 def get_cluster_info(url, id1=1):
