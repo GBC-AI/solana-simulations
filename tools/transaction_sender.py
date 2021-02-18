@@ -36,23 +36,30 @@ async def post_transaction_checker(session, url, tx_sign, request_id):
     # TODO: multi check with list
     headers = {"Content-Type": "application/json"}
     method = RPCMethod("getSignatureStatuses")
-    data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": [[tx_sign]]})
+    data = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": [tx_sign]})
 
     async with session.post(url, headers=headers, data=data) as response:
         response_text = await response.text()
-        if json.loads(response_text)["result"]['value'][0] is None:
-            validating_list[tx_sign]['commitment_slot'] = None
-        else:
-            validating_list[tx_sign]['commitment_slot'] = json.loads(response_text)["result"]['value'][0]['slot']
+        for tx, r in zip(tx_sign, json.loads(response_text)["result"]['value']):
+            if r is None:
+                validating_list[tx]['commitment_slot'] = None
+            else:
+                validating_list[tx]['commitment_slot'] = r['slot']
 
 
 async def experiment_checker():
     async with aiohttp.ClientSession() as session:
         post_tasks = []
         request_id = 3
-        for txn in validating_list.keys():
+        transaction_list = [*validating_list]
+        it = len(transaction_list) // 256
+        rem = len(transaction_list) % 256
+        limits = [256 * i for i in range(1, it + 1)] + [it * 256 + rem]
+        lower_limit = 0
+        for lim in limits:
             request_id += 1
-            post_tasks.append(post_transaction_checker(session, host, txn, request_id))
+            post_tasks.append(post_transaction_checker(session, host, transaction_list[lower_limit:lim], request_id))
+            lower_limit = lim
         await asyncio.gather(*post_tasks)
 
 
