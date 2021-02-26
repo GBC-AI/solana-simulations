@@ -32,6 +32,16 @@ def gzip_datapoint(b_path, output_name):
     tar.close()
 
 
+def valid_sender_tr_log(file_path):
+    if not os.path.exists(file_path):
+        return False
+    else:
+        with open(file_path, "r") as file:
+            if file.read().count("START") > 2:
+                return False
+    return True
+
+
 def run_cluster(b_path, name):
     path = b_path + name + '/logs/'
     process1 = Popen('docker stack deploy -c '+path+'docker-stack.yml solana_stack', shell=True)
@@ -39,7 +49,8 @@ def run_cluster(b_path, name):
     extra_time = 0
     while extra_time < 25:
         time.sleep(60)
-        if os.path.isfile(path+'simulation_result.json') or not os.path.exists(path+'solana_genesis_node.txt'):
+        if os.path.isfile(path+'simulation_result.json') \
+                or not valid_sender_tr_log(path+'sender_tr.log'):
             break
         else:
             extra_time += 1

@@ -5,7 +5,7 @@
     docker pull nikromanov/solana-velas:1.5.0  #(both Alpha and Beta servers)
     docker pull python:3.8-slim
     docker build -t "python_trans_conf:5" .
-    docker build -t "python_trans_conf:5" .\dockers\docker_sync_watcher
+    docker build -t "sync_watch:latest" dockers/docker_sync_watcher/
 
 #### 2. Run datapoint_generator
 

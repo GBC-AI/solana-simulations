@@ -3,17 +3,32 @@ import random
 import argparse
 
 
-def random_value(value, dtype='usize'):
+def random_value_old(value, dtype='usize'):
     value_list = [value]
 
     if dtype == 'f64':
         value = float(value)
-        value_list.extend([value * 2, value * 0.5])
+        value_list.extend([value * 1.1, value * 0.9])
     else:
         value = int(value)
-        value_list.extend([int(value * 2), int(value * 0.5)])
+        value_list.extend([int(value * 1.1), int(value * 0.9)])
     if args.random:
-        return random.choices(value_list, weights=(0.8, 0.1, 0.1))[0]
+        return random.choices(value_list, weights=(0.6, 0.2, 0.2))[0]
+    else:
+        return value
+
+
+def random_value(value, dtype='usize', diff=1.3, share_unchanged=0.6):
+    # 1276+ datapoint
+    value_list = [value]
+    if dtype == 'f64':
+        value = float(value)
+        value_list.extend([value * random.uniform(1, diff), value / random.uniform(1, diff)])
+    else:
+        value = int(value)
+        value_list.extend([int(value * random.uniform(1, diff)), int(value / random.uniform(1, diff))])
+    if args.random:
+        return random.choices(value_list, weights=(share_unchanged, (1-share_unchanged)/2, (1-share_unchanged)/2))[0]
     else:
         return value
 
