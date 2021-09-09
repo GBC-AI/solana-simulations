@@ -1,4 +1,4 @@
-#Generating datapoints:
+## Generating datapoints:
 
 #### 1. To download/build solana (and other) images:  
 
