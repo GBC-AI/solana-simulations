@@ -22,36 +22,7 @@ RUN ./multinode-demo/setup.sh
 # The next row will set --no-port-check flag when solana-validator will be called
 RUN sed -i '/^default_arg\ \-\-require\-tower=*/adefault_arg --no-port-check' multinode-demo/validator.sh && \
     cp -R config ./config_default && \
-    rm -rf target/release/build \
-           target/release/deps \
-           target/release/.fingerprint \
-           target/release/*.d  \
-           target/release/libsolana_*  \
-           target/release/*.rlib  \
-           target/release/*.so \
-           target/release/cargo-build-bpf \
-           target/release/solana-accounts-bench \
-           target/release/solana-banking-bench \
-           target/release/solana-bench-exchange \
-           target/release/solana-bench-streamer \
-           target/release/solana-bench-tps \
-           target/release/solana-csv-to-validator-infos \
-           target/release/solana-dos \
-           target/release/solana-install \
-           target/release/solana-install-init \
-           target/release/solana-ip-address \
-           target/release/solana-ip-address-server \
-           target/release/solana-net-shaper \
-           target/release/solana-poh-bench \
-           target/release/solana-ramp-tps \
-           target/release/solana-stake-accounts \
-           target/release/solana-stake-monitor \
-           target/release/solana-stake-o-matic \
-           target/release/solana-sys-tuner \
-           target/release/solana-tokens \
-           target/release/solana-upload-perf \
-           target/release/solana-vote-signer \
-           target/release/solana-watchtower
+    rm -rf target/release/deps
 
 FROM ubuntu:18.04
 ARG USER
